@@ -1,0 +1,200 @@
+:root {
+  --bg: #0a1128;
+  --deep: #060c1d;
+  --card: #101a35;
+  --card2: #14203c;
+  --text: #f7f9ff;
+  --muted: #b7c0d2;
+  --line: #263452;
+  --green: #60dda2;
+  --green2: #14a56f;
+}
+
+[data-theme="light"] {
+  --bg: #f4f7fb;
+  --deep: #e8eef6;
+  --card: #ffffff;
+  --card2: #edf2f8;
+  --text: #0a1128;
+  --muted: #526078;
+  --line: #ccd5e2;
+}
+
+.topbar {
+  background: rgba(10, 17, 40, 0.94);
+  border-color: rgba(255, 255, 255, 0.09);
+}
+
+.topbar .brand span,
+.topbar .menu,
+.topbar .theme-toggle {
+  color: #f7f9ff;
+}
+
+.topbar .brand img,
+.footer .brand img {
+  filter: none;
+  opacity: 1;
+}
+
+.hero {
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 76% 34%, rgba(20, 93, 148, 0.22), transparent 31%),
+    radial-gradient(circle at 25% 72%, rgba(32, 68, 135, 0.1), transparent 28%),
+    linear-gradient(125deg, #0a1128 0%, #0a1128 58%, #0d1732 100%);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(30deg, transparent 48%, rgba(160, 178, 218, 0.035) 49%, rgba(160, 178, 218, 0.035) 51%, transparent 52%),
+    linear-gradient(150deg, transparent 48%, rgba(160, 178, 218, 0.025) 49%, rgba(160, 178, 218, 0.025) 51%, transparent 52%);
+  background-size: 120px 70px;
+  mask-image: linear-gradient(to left, #000, transparent 78%);
+}
+
+.hero::after {
+  border-color: rgba(160, 178, 218, 0.08);
+  box-shadow: 0 0 110px rgba(50, 78, 143, 0.1);
+}
+
+.hero-glow {
+  background: #075678;
+  opacity: 0.16;
+}
+
+.hero h1,
+.hero h1 span {
+  color: #ffffff;
+}
+
+.hero p {
+  color: #c5cddd;
+}
+
+.hero .primary {
+  color: #032217;
+  background: #60dda2;
+  box-shadow: 0 14px 34px rgba(96, 221, 162, 0.16);
+}
+
+.hero .secondary-btn {
+  color: #f7f9ff;
+  background: rgba(255, 255, 255, 0.025);
+  border-color: rgba(255, 255, 255, 0.48);
+  backdrop-filter: blur(16px);
+}
+
+.hero-corner-logo {
+  position: absolute;
+  left: clamp(20px, 7vw, 120px);
+  bottom: 24px;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  filter: none;
+  opacity: 0.9;
+}
+
+.desktop-nav a {
+  color: #c4ccdc;
+}
+
+.desktop-nav .active,
+.desktop-nav a:hover {
+  color: #60dda2;
+}
+
+.eyebrow {
+  color: #60dda2;
+  background: rgba(16, 29, 59, 0.72);
+  border-color: rgba(96, 221, 162, 0.22);
+  box-shadow: 0 12px 38px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(16px);
+}
+
+.hero-content {
+  padding: 12px 0;
+}
+
+.hero .actions {
+  align-items: stretch;
+}
+
+[data-theme="light"] .topbar {
+  background: rgba(248, 250, 253, 0.94);
+  border-color: #dce3ed;
+}
+
+[data-theme="light"] .topbar .brand span,
+[data-theme="light"] .topbar .menu,
+[data-theme="light"] .topbar .theme-toggle {
+  color: #0a1128;
+}
+
+[data-theme="light"] .desktop-nav a {
+  color: #526078;
+}
+
+[data-theme="light"] .desktop-nav .active,
+[data-theme="light"] .desktop-nav a:hover {
+  color: #087a55;
+}
+
+[data-theme="light"] .hero {
+  background:
+    radial-gradient(circle at 76% 34%, rgba(20, 93, 148, 0.13), transparent 31%),
+    radial-gradient(circle at 25% 72%, rgba(96, 221, 162, 0.1), transparent 28%),
+    linear-gradient(125deg, #f7f9fc 0%, #eef3f9 58%, #e6edf6 100%);
+}
+
+[data-theme="light"] .hero::before {
+  background-image:
+    linear-gradient(30deg, transparent 48%, rgba(10, 17, 40, 0.055) 49%, rgba(10, 17, 40, 0.055) 51%, transparent 52%),
+    linear-gradient(150deg, transparent 48%, rgba(10, 17, 40, 0.04) 49%, rgba(10, 17, 40, 0.04) 51%, transparent 52%);
+}
+
+[data-theme="light"] .hero h1,
+[data-theme="light"] .hero h1 span {
+  color: #0a1128;
+}
+
+[data-theme="light"] .hero p {
+  color: #526078;
+}
+
+[data-theme="light"] .hero .secondary-btn {
+  color: #0a1128;
+  background: rgba(255, 255, 255, 0.62);
+  border-color: rgba(10, 17, 40, 0.25);
+}
+
+[data-theme="light"] .eyebrow {
+  color: #087a55;
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(8, 122, 85, 0.2);
+}
+
+[data-theme="light"] .scroll {
+  color: #526078;
+}
+
+[data-theme="light"] .hero-corner-logo {
+  opacity: 1;
+}
+
+[data-theme="light"] .project-card::after {
+  background: linear-gradient(transparent, rgba(6, 12, 29, 0.94));
+}
+
+@media (max-width: 760px) {
+  .hero-corner-logo {
+    bottom: 30px;
+    width: 26px;
+    height: 26px;
+  }
+}
