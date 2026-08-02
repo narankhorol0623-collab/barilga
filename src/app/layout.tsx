@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import "./brand.css";
-import "./landing-refresh.css";
 
 export const metadata: Metadata = {
   title: "Гүнд Саплай — Ирээдүйн бүтээн байгуулалт",
@@ -18,9 +16,9 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className="h-full antialiased"
+      className="h-full scroll-smooth antialiased"
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="flex min-h-full min-w-80 flex-col bg-[#0a1128] font-sans text-[#f7f9ff] in-data-[theme=light]:bg-[#f4f7fb] in-data-[theme=light]:text-[#0a1128]">{children}</body>
     </html>
   );
 }

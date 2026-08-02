@@ -1,0 +1,11 @@
+export const headerClass = "fixed inset-x-0 top-0 z-50 flex h-16 items-center justify-between border-b border-white/10 bg-[#0a1128]/94 px-4 backdrop-blur-xl min-[761px]:h-[76px] min-[761px]:px-[clamp(20px,7vw,120px)] in-data-[theme=light]:border-[#dce3ed] in-data-[theme=light]:bg-[#f8fafd]/94";
+export const navToolsClass = "flex items-center gap-2";
+export const menuClass = "border-0 bg-transparent text-2xl text-inherit";
+export const glassClass = "border border-white/10 bg-[#101a35]/72 backdrop-blur-lg in-data-[theme=light]:border-[#ccd5e2] in-data-[theme=light]:bg-white/78";
+export const primaryButtonClass = "inline-flex min-h-[52px] items-center justify-center rounded-md bg-[#60dda2] px-7 text-[13px] font-extrabold tracking-[.06em] text-[#032217] shadow-[0_14px_34px_rgba(96,221,162,.16)] transition-transform hover:-translate-y-0.5 max-[760px]:w-full";
+export const secondaryButtonClass = "inline-flex min-h-[52px] items-center justify-center rounded-md border border-white/20 bg-[#0f1c2c]/68 px-7 text-[13px] font-extrabold tracking-[.06em] transition-transform hover:-translate-y-0.5 max-[760px]:w-full";
+export const kickerClass = "text-xs font-extrabold tracking-[.18em] text-[#60dda2]";
+export const portalClass = "min-h-screen bg-[#0a1128] bg-[linear-gradient(rgba(255,255,255,.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.025)_1px,transparent_1px)] bg-[size:36px_36px] px-[clamp(16px,5vw,72px)] pb-[100px] pt-[120px] max-[760px]:px-3.5 max-[760px]:pb-[100px] max-[760px]:pt-24 in-data-[theme=light]:bg-[#f4f7fb]";
+export const pageHeadClass = "mx-auto mb-[42px] max-w-[760px] text-center max-[760px]:text-left [&_h1]:mb-4 [&_h1]:text-[clamp(38px,6vw,68px)] [&_h1]:leading-[1.1] max-[760px]:[&_h1]:text-[40px] [&_p]:leading-[1.7] [&_p]:text-[#b7c0d2] in-data-[theme=light]:[&_p]:text-[#526078]";
+export const infoGridClass = "mx-auto my-7 grid max-w-[1180px] grid-cols-2 gap-6 max-[760px]:grid-cols-1";
+export const bottomNavClass = "fixed inset-x-0 bottom-0 z-[60] hidden justify-around border-t border-white/8 bg-[#14203c]/94 px-[5px] pb-[18px] pt-2.5 backdrop-blur-xl max-[760px]:flex in-data-[theme=light]:bg-white/94 [&_a]:flex [&_a]:flex-col [&_a]:items-center [&_a]:gap-1 [&_a]:text-[19px] [&_a]:text-[#8f9097] [&_span]:text-[9px] [&_span]:font-extrabold";
