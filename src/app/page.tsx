@@ -20,6 +20,22 @@ const projects = [
   },
 ];
 
+const milestones = [
+  { year: "2019", title: "Hunnu Villa", detail: "Барилгын салбар дахь ажлын туршлагын эхлэл" },
+  { year: "2021", title: "Green Art", detail: "Туслан гүйцэтгэгчээр ажилласан" },
+  { year: "2022", title: "Sunset", detail: "Томоохон бүтээн байгуулалтын туршлага" },
+  { year: "2023", title: "Гүнд Саплай ХХК", detail: "Бие даасан хөгжүүлэгч компани болсон" },
+];
+
+const values = [
+  { no: "01", title: "Чанар", text: "Материалын сонголтоос эхлээд гүйцэтгэл, хүлээлгэн өгөх хүртэлх үе шат бүрд өндөр шаардлага тавина." },
+  { no: "02", title: "Хариуцлага", text: "Хүлээсэн үүрэг, өгсөн амлалт, ажлын хугацаа, гүйцэтгэлдээ эзэн байх нь бидний үндсэн зарчим." },
+  { no: "03", title: "Итгэлцэл", text: "Захиалагч, харилцагч, хамтрагч болон ажилтнуудтайгаа урт хугацааны итгэлцсэн харилцааг эрхэмлэнэ." },
+  { no: "04", title: "Мэргэжлийн ур чадвар", text: "Бодит бүтээн байгуулалтаас хуримтлуулсан туршлага, мэргэжлийн багийн мэдлэг чадварыг төсөл бүрдээ шингээнэ." },
+  { no: "05", title: "Хөгжил, шинэчлэл", text: "Шинэ технологи, материал, инженерийн шийдэл, орчин үеийн архитектурын чиг хандлагыг тасралтгүй нэвтрүүлнэ." },
+  { no: "06", title: "Хэрэглэгчийн үнэ цэн", text: "Бидний эцсийн хэмжүүр бол тэнд амьдрах хүмүүсийн тав тух, сэтгэл ханамж, урт хугацааны үнэ цэн юм." },
+];
+
 export default function Home() {
   return (
     <>
@@ -48,21 +64,75 @@ export default function Home() {
           <a className="absolute bottom-6 left-1/2 z-[2] -translate-x-1/2 text-center text-[9px] tracking-[.25em] text-[#778294]" href="#about">SCROLL <b className="block text-[26px] text-[#60dda2]">⌄</b></a>
         </section>
 
-        <section id="about" className="grid grid-cols-2 items-center gap-20 px-[clamp(20px,7vw,120px)] py-[100px] max-[760px]:grid-cols-1 max-[760px]:gap-7 max-[760px]:px-4 max-[760px]:py-[72px] [&_h2]:mb-10 [&_h2]:text-[clamp(30px,3.5vw,48px)] [&_h2]:tracking-[-.03em]">
-          <div>
-            <h2>Алсын хараа ба Үнэт зүйл</h2>
-            <article className={`${glassClass} my-4 rounded-lg border-l-4 border-l-[#60dda2] p-6`}>
-              <h3 className="mb-2 text-[21px] text-[#60dda2]">Эрхэм зорилго</h3>
-              <p className="leading-[1.7] text-[#b7c0d2] in-data-[theme=light]:text-[#526078]">Бид дэлхийн жишигт нийцсэн архитектурын шийдлийг Монгол хөрсөнд буулгаж, амьдралын чанарыг дээшлүүлэх тогтвортой бүтээн байгуулалтыг цогцлооно.</p>
-            </article>
-            <article className={`${glassClass} my-4 rounded-lg border-l-4 border-l-[#b9c7e4] p-6`}>
-              <h3 className="mb-2 text-[21px] text-[#b9c7e4]">Чанарын баталгаа</h3>
-              <p className="leading-[1.7] text-[#b7c0d2] in-data-[theme=light]:text-[#526078]">Барилгын материал бүр, шийдэл болгон дээр бид аюулгүй байдал, урт хугацааны үнэ цэнийг нэгдүгээрт тавьдаг.</p>
-            </article>
-          </div>
-          <div className="relative h-[520px] overflow-hidden rounded-[14px] max-[760px]:h-[390px] after:absolute after:inset-x-0 after:bottom-0 after:top-[35%] after:bg-gradient-to-b after:from-transparent after:to-[#060c1d] after:content-['']">
-            <img className="size-full object-cover grayscale" alt="Орчин үеийн архитектур" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQmih6qQW9cqOrbKLMoHBVzRnGLOlvD9gsA81feU_ktDfG5Q0-OrfhJKQXyQn3qfg8-fB2RpaN6dUQzPL7WasdcqGznskdQDwpjcmbWUOWwTyhU3Lg_XoE6egI5be-wOLK4UpykB0WjxjC4bpSCQey4kGpYJhSCMbyylOnPh_dmmaJaJtp5Dea23_x5Vry9JY94mhTSvtLimAU3BerlolQ_sl_Gsz5FW4-of8H47AjcwiZi5Fxz5fV" />
-            <blockquote className={`${glassClass} absolute inset-x-6 bottom-6 z-[2] m-0 rounded-lg p-6 text-xl`}>&ldquo;Архитектур бол хөлдсөн хөгжим юм.&rdquo;</blockquote>
+        <section id="about" className="overflow-hidden px-[clamp(20px,7vw,120px)] py-[100px] max-[760px]:px-4 max-[760px]:py-[72px]">
+          <div className="mx-auto max-w-[1240px]">
+            <div className="grid grid-cols-[.8fr_1.2fr] gap-20 max-[900px]:grid-cols-1 max-[900px]:gap-8">
+              <div>
+                <span className={kickerClass}>БИДНИЙ ТУХАЙ</span>
+                <h2 className="mt-3 text-[clamp(34px,4vw,56px)] leading-[1.08] tracking-[-.04em]">Туршлагаас<br /><span className="text-[#60dda2]">үнэ цэн бүтээнэ.</span></h2>
+              </div>
+              <div className="space-y-5 text-[17px] leading-[1.85] text-[#b7c0d2] max-[760px]:text-[15px] in-data-[theme=light]:text-[#526078]">
+                <p>Манай хамт олон барилгын салбар дахь ажлын туршлагаа 2019 онд “Hunnu Villa” хотхоны бүтээн байгуулалтаас эхлүүлж, “Green Art”, “Sunset” хотхоны төслүүдэд туслан гүйцэтгэгчээр ажиллан мэргэжлийн туршлага хуримтлуулсан.</p>
+                <p>Хуримтлуулсан туршлага, мэргэжлийн багийн ур чадвартаа тулгуурлан 2023 онд “Гүнд Саплай” ХХК-ийг байгуулж, өөрийн бие даасан үл хөдлөх хөрөнгийн төслийг хэрэгжүүлж эхэлсэн.</p>
+              </div>
+            </div>
+
+            <div className="relative mt-16 grid grid-cols-4 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 max-[820px]:grid-cols-2 max-[480px]:grid-cols-1 in-data-[theme=light]:border-[#ccd5e2] in-data-[theme=light]:bg-[#ccd5e2]">
+              {milestones.map((item) => (
+                <article className="bg-[#0d1730] p-7 in-data-[theme=light]:bg-white" key={item.year}>
+                  <strong className="text-[32px] tracking-[-.04em] text-[#60dda2]">{item.year}</strong>
+                  <h3 className="mt-5 text-lg font-bold">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-[#8f9bb2] in-data-[theme=light]:text-[#526078]">{item.detail}</p>
+                </article>
+              ))}
+            </div>
+
+            <div className={`${glassClass} relative mt-6 overflow-hidden rounded-2xl p-10 max-[760px]:p-6`}>
+              <div className="absolute -right-20 -top-24 size-72 rounded-full bg-[#60dda2]/10 blur-[90px]" />
+              <div className="relative grid grid-cols-[auto_1fr] gap-10 max-[760px]:grid-cols-1 max-[760px]:gap-5">
+                <div className="text-[56px] font-black leading-none text-[#60dda2]">3.8<span className="ml-1 text-lg">га</span></div>
+                <div>
+                  <h3 className="text-2xl font-bold">Luxury Residence — Зайсан</h3>
+                  <p className="mt-3 max-w-[850px] leading-[1.8] text-[#b7c0d2] in-data-[theme=light]:text-[#526078]">Хан-Уул дүүргийн 11-р хороонд 5 блок орон сууц, 22 амины орон сууц бүхий төслийг үе шаттай хэрэгжүүлж, төлөвлөгдсөн 5 блокийн бүтээн байгуулалтыг бүрэн дуусган захиалагчдадаа хүлээлгэн өгөөд байна.</p>
+                  <div className="mt-6 flex flex-wrap gap-3 text-xs font-extrabold tracking-[.08em]"><span className="rounded-full border border-[#60dda2]/30 px-4 py-2 text-[#60dda2]">5 БЛОК</span><span className="rounded-full border border-[#60dda2]/30 px-4 py-2 text-[#60dda2]">22 АМИНЫ ОРОН СУУЦ</span><span className="rounded-full border border-[#60dda2]/30 px-4 py-2 text-[#60dda2]">БҮРЭН ДУУССАН</span></div>
+                </div>
+              </div>
+            </div>
+
+            <p className="mx-auto my-16 max-w-[960px] text-center text-xl leading-[1.75] text-[#d7deec] max-[760px]:my-12 max-[760px]:text-base in-data-[theme=light]:text-[#344258]">Энэ хугацаанд бид төслийн төлөвлөлт, бүтээн байгуулалт, инженерийн шийдэл, чанарын хяналт, борлуулалт болон хэрэглэгчид хүлээлгэн өгөх хүртэлх <strong className="text-white in-data-[theme=light]:text-[#0a1128]">бүхий л үе шатыг цогцоор хэрэгжүүлэх</strong> чадавхаа бэхжүүлсээр ирлээ.</p>
+
+            <div className="grid grid-cols-2 gap-6 max-[760px]:grid-cols-1">
+              <article className={`${glassClass} rounded-2xl border-t-4 border-t-[#60dda2] p-8 max-[760px]:p-6`}>
+                <span className={kickerClass}>БИДНИЙ АЛСЫН ХАРАА</span>
+                <p className="mt-5 text-lg leading-[1.8] text-[#d7deec] in-data-[theme=light]:text-[#344258]">Монголын үл хөдлөх хөрөнгө, барилгын салбарт чанар, хариуцлага, үнэ цэнээрээ танигдсан тогтвортой хөгжүүлэгч компани болж, хотын өнгө төрх, иргэдийн амьдралын чанарт бодит хувь нэмэр оруулсан бүтээн байгуулалтуудыг бий болгоно.</p>
+              </article>
+              <article className={`${glassClass} rounded-2xl border-t-4 border-t-[#b9c7e4] p-8 max-[760px]:p-6`}>
+                <span className={`${kickerClass} !text-[#b9c7e4]`}>БИДНИЙ ЭРХЭМ ЗОРИЛГО</span>
+                <p className="mt-5 text-lg leading-[1.8] text-[#d7deec] in-data-[theme=light]:text-[#344258]">Мэргэжлийн ур чадвар, инженерийн оновчтой шийдэл, чанартай гүйцэтгэл, хариуцлагатай менежментэд тулгуурлан тав тухтай, аюулгүй, урт хугацааны үнэ цэнтэй орон зайг бүтээнэ.</p>
+                <p className="mt-4 text-sm leading-6 text-[#8f9bb2] in-data-[theme=light]:text-[#526078]">Бүтээн байгуулалт бүрээ зөвхөн өнөөдрийн хэрэгцээнд бус, ирээдүйн үнэ цэнийг хадгалах хөрөнгө хэмээн хардаг.</p>
+              </article>
+            </div>
+
+            <div className="mt-20 max-[760px]:mt-14">
+              <span className={kickerClass}>БИДНИЙ ҮНЭТ ЗҮЙЛС</span>
+              <h2 className="mb-10 mt-3 text-[clamp(30px,3.5vw,46px)] tracking-[-.03em]">Бидний ажиллах зарчим</h2>
+              <div className="grid grid-cols-3 gap-4 max-[900px]:grid-cols-2 max-[600px]:grid-cols-1">
+                {values.map((value) => (
+                  <article className={`${glassClass} group rounded-xl p-6 transition-colors hover:border-[#60dda2]/50`} key={value.no}>
+                    <span className="text-xs font-extrabold tracking-[.16em] text-[#60dda2]">{value.no}</span>
+                    <h3 className="mb-3 mt-6 text-xl font-bold group-hover:text-[#60dda2]">{value.title}</h3>
+                    <p className="text-sm leading-[1.75] text-[#9ca8bd] in-data-[theme=light]:text-[#526078]">{value.text}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-16 rounded-2xl bg-[#60dda2] px-10 py-12 text-center text-[#032217] max-[760px]:px-5 max-[760px]:py-9">
+              <p className="text-[clamp(24px,3vw,40px)] font-black leading-[1.25] tracking-[-.035em]">Бид зөвхөн барилга барьдаггүй.<br />Бид хүмүүсийн амьдрах орчин, ирээдүйн үнэ цэнийг бүтээдэг.</p>
+              <div className="mx-auto my-6 h-px w-20 bg-[#032217]/30" />
+              <strong className="text-sm tracking-[.2em]">ГҮНД САПЛАЙ ХХК</strong>
+              <p className="mt-2 text-sm font-semibold">Туршлагаас бүтээн байгуулалт, бүтээн байгуулалтаас үнэ цэн.</p>
+            </div>
           </div>
         </section>
 
