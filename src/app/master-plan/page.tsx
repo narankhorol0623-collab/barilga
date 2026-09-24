@@ -1,27 +1,82 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import ThemeToggle from "../theme-toggle";
+import { getResidenceInventory } from "@/lib/catalog";
+import { createPreviewInventory } from "@/lib/residence";
 import BrandLogo from "../brand-logo";
-import { bottomNavClass, glassClass, headerClass, infoGridClass, kickerClass, menuClass, navToolsClass, pageHeadClass, portalClass } from "../ui";
+import ThemeToggle from "../theme-toggle";
+import { headerClass, navToolsClass } from "../ui";
+import ResidenceSelector from "./residence-selector";
 
-const blocks = ["N1 Блок", "N2 Блок", "N3 Блок", "N4 Блок", "N7 Блок", "Бусад төлөвлөлт"];
+export const metadata: Metadata = {
+  title: "Luxury Residence — Байр сонгох | Гүнд Саплай",
+};
 
-export default function MasterPlan() {
+export default async function MasterPlan({
+  searchParams,
+}: {
+  searchParams: Promise<{ block?: string; floor?: string }>;
+}) {
+  const [inventory, params] = await Promise.all([
+    getResidenceInventory(),
+    searchParams,
+  ]);
+  const preview = inventory.error;
+  const data = preview ? createPreviewInventory() : inventory;
   return (
     <>
-      <header className={headerClass}><BrandLogo /><div className={navToolsClass}><ThemeToggle/><button className={menuClass}>☰</button></div></header>
-      <main className={portalClass}>
-        <div className={pageHeadClass}>
-          <span className={`${kickerClass} mb-3 block`}>GUND SUPPLY RESIDENCE</span>
-          <h1>Төслийн мастер төлөвлөгөө</h1>
-          <p>Хотхоны ерөнхий төлөвлөлтөөс сонирхож буй блокоо сонгоно уу.</p>
+      <header className={headerClass}>
+        <BrandLogo />
+        <nav className="hidden items-center gap-8 text-sm min-[761px]:flex">
+          <Link href="/">Нүүр</Link>
+          <Link
+            href="/master-plan"
+            className="text-[color:var(--brand-accent)]"
+            aria-current="page"
+          >
+            Байр сонгох
+          </Link>
+          <Link href="/#contact">Холбоо барих</Link>
+        </nav>
+        <div className={navToolsClass}>
+          <ThemeToggle />
+          <Link href="/" className="ml-2 text-sm min-[761px]:hidden">
+            Нүүр ↗
+          </Link>
         </div>
-        <Link href="/projects/n1" className="relative mx-auto block h-[520px] max-w-[1180px] rounded-xl border border-[#263452] bg-cover bg-center after:absolute after:left-[8%] after:top-[42%] after:rounded-md after:border after:border-[#60dda2] after:bg-[#071424]/90 after:px-6 after:py-[18px] after:font-extrabold after:text-[#60dda2] after:content-['N1_БЛОК_·_СОНГОХ'] max-[760px]:h-[260px] in-data-[theme=light]:border-[#ccd5e2]" aria-label="N1 блок сонгох" style={{backgroundImage:"url(https://lh3.googleusercontent.com/aida-public/AB6AXuBq-aIxWHJCM5vHIafc0saDbqfD9ZeUNAH903cunpt7Vlbrw1t4S6irsQQzrETco7Uc_o2XANW4hw3TV0CRp0T14W7LXPWzUo_ASvdD5gyNt19towCT8ovY7VLOxvxCSqLWRPnNkDn7zWE-NPiNO0Z9Fgjdb-C826vTYFOpv8O-E1YzCobVA0F2lBlv9hDagiJGLzeIwq6LG_Nl399rNLPefZKGjysnEHiSG9WUgKWQG_D84lIFZtHU)"}} />
-        <div className={infoGridClass}>
-          <article className={`${glassClass} rounded-[10px] p-8 max-[760px]:p-[22px] [&_h2]:mb-5 [&_h2]:text-[28px] [&_p]:leading-[1.8] [&_p]:text-[#b7c0d2]`}><h2>Төслийн масштаб</h2><p>Гүүд Саплай Резиденс нь нийт 4.2 га талбайг хамарсан, орчин үеийн архитектурын шийдэл бүхий цогцолбор юм. Хүн төвтэй төлөвлөлтийн дагуу нийт талбайн 60%-ийг ногоон байгууламж эзэлнэ.</p><div className={kickerClass}>5.2К М.КВ НОГООН БҮС &nbsp;&nbsp; 12 ОРОН СУУЦНЫ БЛОК</div></article>
-          <article className={`${glassClass} rounded-[10px] p-8 max-[760px]:p-[22px] [&_h2]:mb-5 [&_h2]:text-[28px]`}><h2>Барилгын мэдээлэл</h2><div className="grid grid-cols-2 gap-3">{blocks.map((b,i)=><Link href={i===0?"/projects/n1":"#"} className={`rounded-[5px] border p-[18px] ${i===0?"border-[#60dda2] text-[#60dda2]":"border-[#263452]"}`} key={b}>{b}</Link>)}</div></article>
+      </header>
+      <main className="mx-auto w-full max-w-[1600px] px-4 pb-12 pt-24 min-[761px]:px-10 min-[761px]:pt-28">
+        <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="mb-2 text-[10px] font-bold tracking-[.24em] text-[color:var(--brand-accent)]">
+              GUND SUPPLY · LUXURY RESIDENCE
+            </p>
+            <h1 className="text-3xl font-semibold tracking-tight min-[761px]:text-4xl">
+              Luxury Residence
+              <span className="text-[color:var(--brand-accent)]">
+                {" "}
+                — Таны шинэ гэр.
+              </span>
+            </h1>
+            <p className="mt-3 text-sm text-slate-400 in-data-[theme=light]:text-slate-600">
+              Хотхоны зургаас блокоо сонгоод, өөрт тохирох байраа олоорой.
+            </p>
+          </div>
+          <Link
+            href="/#about"
+            className="text-sm text-slate-400 hover:text-[color:var(--brand-accent)]"
+          >
+            Хотхоны тухай ↗
+          </Link>
         </div>
+        <ResidenceSelector
+          blocks={inventory.blocks}
+          floors={data.floors}
+          units={data.units}
+          preview={preview}
+          initialBlock={params.block}
+          initialFloor={params.floor}
+        />
       </main>
-      <nav className={bottomNavClass}><Link href="/">⌂<span>НҮҮР</span></Link><Link className="!text-[#60dda2]" href="/master-plan">▥<span>ТӨЛӨВЛӨГӨӨ</span></Link><a href="#">▱<span>ХАДГАЛСАН</span></a><a href="#">?<span>ХОЛБОО</span></a></nav>
     </>
   );
 }

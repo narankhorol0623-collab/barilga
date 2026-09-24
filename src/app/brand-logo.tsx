@@ -1,5 +1,10 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function BrandLogo() {
-  return <Link className="inline-flex items-center gap-2.5 text-[18px] font-extrabold tracking-[-.02em] min-[761px]:text-[22px]" href="/" aria-label="Гүнд Саплай нүүр хуудас"><img className="size-9 object-contain min-[761px]:size-[42px]" src="/good-supply-logo.png" alt="" /><span>ГҮНД САПЛАЙ</span></Link>;
+  return (
+    <Link className="inline-flex shrink-0 items-center" href="/" aria-label="Гүнд Саплай нүүр хуудас">
+      <Image className="h-[54px] w-auto min-[761px]:h-[64px]" src="/gund-supply-logo.webp" alt="GUND SUPPLY LLC" width={1597} height={985} priority />
+    </Link>
+  );
 }
