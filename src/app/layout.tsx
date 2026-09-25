@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  icons: { icon: { url: "/gund-supply-logo.webp", type: "image/webp" } },
   title: "Гүнд Саплай — Ирээдүйн бүтээн байгуулалт",
   description:
     "Монголын архитектурын шинэ өнгө төрхийг тодорхойлох үл хөдлөх хөрөнгийн портал.",
@@ -14,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="mn"
       suppressHydrationWarning
       className="h-full scroll-smooth antialiased"
     >

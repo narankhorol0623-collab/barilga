@@ -1,1 +1,29 @@
 @import "tailwindcss";
+
+:root {
+  --brand-primary: #216aab;
+  --brand-accent: #72b8ef;
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --brand-accent: #216aab;
+  color-scheme: light;
+}
+
+::selection {
+  background: #216aab;
+  color: white;
+}
+
+.residence-map-block:focus-visible polygon {
+  stroke: white;
+  stroke-width: 4;
+  fill: #2796e6;
+  fill-opacity: .45;
+}
+
+.residence-map-block:focus-visible rect {
+  stroke: white;
+  stroke-width: 3;
+}
