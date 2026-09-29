@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "node scripts/run-node.mjs node_modules/next/dist/bin/next dev",
+    "build": "node scripts/run-node.mjs node_modules/next/dist/bin/next build",
+    "start": "node scripts/run-node.mjs node_modules/next/dist/bin/next start",
     "lint": "eslint",
-    "db:check": "node scripts/check-supabase.mjs"
+    "db:check": "node scripts/run-node.mjs scripts/check-supabase.mjs",
+    "db:migrate": "bun scripts/migrate-supabase.mjs",
+    "test": "node scripts/test-residence.mjs"
   },
   "dependencies": {
     "@types/three": "^0.185.1",
