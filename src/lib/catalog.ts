@@ -1,5 +1,14 @@
 import "server-only";
 import { connection } from "next/server";
+import type { ResidenceBlock, ResidenceFloor, ResidenceUnit, ResidenceLayout } from "./residence";
+
+export type ResidenceInventory = {
+  blocks: ResidenceBlock[];
+  floors: ResidenceFloor[];
+  units: ResidenceUnit[];
+  layouts: ResidenceLayout[];
+  error: boolean;
+};
 
 type Result<T> = { data: T[]; error: boolean };
 export type Project = {
@@ -82,22 +91,31 @@ export function getUnits() {
   );
 }
 
-export async function getResidenceInventory() {
-  const [blocks, floors, units] = await Promise.all([
-    getBlocks(),
-    readCatalog<import("./residence").ResidenceFloor>(
-      "catalog_floors",
-      "select=block_slug,floor,available,total&published=eq.true&order=floor.desc&limit=1000",
+export async function getResidenceInventory(): Promise<ResidenceInventory> {
+  const [blocks, floors, units, layouts] = await Promise.all([
+    readCatalog<ResidenceBlock>(
+      "catalog_blocks",
+      "select=slug,name,total_floors,garage_floors&slug=eq.n7&selectable=eq.true&published=eq.true",
     ),
-    readCatalog<import("./residence").ResidenceUnit>(
+    readCatalog<ResidenceFloor>(
+      "catalog_floors",
+      "select=block_slug,floor,available,total,usage&block_slug=eq.n7&published=eq.true&order=floor.desc&limit=1000",
+    ),
+    readCatalog<ResidenceUnit>(
       "catalog_units",
-      "select=block_slug,floor,number,rooms,area,status&published=eq.true&order=block_slug.asc,floor.asc,number.asc&limit=1000",
+      "select=block_slug,floor,number,rooms,area,status,layout_code&block_slug=eq.n7&published=eq.true&order=floor.asc,number.asc&limit=1000",
+    ),
+    readCatalog<ResidenceLayout>(
+      "catalog_layouts",
+      "select=block_slug,code,area,rooms,spaces,plan_image&block_slug=eq.n7&published=eq.true&order=code.asc",
     ),
   ]);
+  const error = blocks.error || floors.error || units.error || layouts.error;
   return {
-    blocks: blocks.data,
-    floors: floors.data,
-    units: units.data,
-    error: blocks.error || floors.error || units.error,
+    blocks: error ? [] : blocks.data,
+    floors: error ? [] : floors.data,
+    units: error ? [] : units.data,
+    layouts: error ? [] : layouts.data,
+    error,
   };
 }

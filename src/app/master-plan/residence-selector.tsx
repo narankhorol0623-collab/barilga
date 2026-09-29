@@ -1,497 +1,108 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
-import {
-  filterResidenceUnits,
-  residenceBlocks,
-  type ResidenceFloor,
-  type ResidenceUnit,
-} from "@/lib/residence";
+import Image from 'next/image';
+import { useRef, useState } from 'react';
+import { residenceMap, type ResidenceBlock, type ResidenceFloor, type ResidenceLayout, type ResidenceUnit } from '@/lib/residence';
+import { residenceDesigns } from '@/lib/residence-layouts';
+import InquiryForm from './inquiry-form';
 
 type Props = {
-  blocks: { slug: string; name: string }[];
+  blocks: ResidenceBlock[];
   floors: ResidenceFloor[];
   units: ResidenceUnit[];
-  preview: boolean;
+  layouts: ResidenceLayout[];
   initialBlock?: string;
   initialFloor?: string;
+  inventoryUnavailable?: boolean;
 };
-const labels = {
-  available: "Боломжтой",
-  reserved: "Захиалгатай",
-  sold: "Зарагдсан",
-};
-const statusClasses = {
-  available: "bg-sky-400/10 text-sky-300 in-data-[theme=light]:text-sky-700",
-  reserved:
-    "bg-amber-400/10 text-amber-300 in-data-[theme=light]:text-amber-700",
-  sold: "bg-slate-400/10 text-slate-400 in-data-[theme=light]:text-slate-600",
-};
+const statusLabels = { available: 'Боломжтой', reserved: 'Захиалгатай', sold: 'Зарагдсан' };
 
-export default function ResidenceSelector({
-  blocks,
-  floors,
-  units,
-  preview,
-  initialBlock,
-  initialFloor,
-}: Props) {
-  const validInitialBlock = residenceBlocks.some((b) => b.slug === initialBlock)
-    ? initialBlock!
-    : null;
-  const [blockSlug, setBlockSlug] = useState<string | null>(validInitialBlock);
-  const [floor, setFloor] = useState<number | null>(
-    validInitialBlock &&
-      floors.some(
-        (f) =>
-          f.block_slug === validInitialBlock &&
-          f.floor === Number(initialFloor),
-      )
-      ? Number(initialFloor)
-      : null,
-  );
-  const [unitNumber, setUnitNumber] = useState<string | null>(null);
-  const [rooms, setRooms] = useState(0);
-  const [availableOnly, setAvailableOnly] = useState(false);
-  const [hovered, setHovered] = useState<string | null>(null);
-  const mappedBlocks = residenceBlocks.map((block) => ({
-    ...block,
-    name: blocks.find((b) => b.slug === block.slug)?.name ?? block.name,
-  }));
-  const block = mappedBlocks.find((b) => b.slug === blockSlug);
-  const blockFloors = floors
-    .filter((f) => f.block_slug === blockSlug)
-    .sort((a, b) => b.floor - a.floor);
-  const visibleUnits = filterResidenceUnits(
-    units,
-    blockSlug ?? "",
-    floor,
-    rooms,
-    availableOnly,
-  );
-  const selectedUnit = visibleUnits.find((unit) => unit.number === unitNumber);
-  const activeMapBlock = mappedBlocks.find(
-    (b) => b.slug === (hovered ?? blockSlug),
-  );
-  const blockAvailability = blockFloors.reduce(
-    (sum, f) => sum + f.available,
-    0,
-  );
+export default function ResidenceSelector({ blocks, floors, units, layouts, initialBlock, initialFloor, inventoryUnavailable = false }: Props) {
+  const tower = blocks.find(b => b.slug === 'n7');
+  const [blockSlug, setBlockSlug] = useState<string | null>(tower && initialBlock === tower.slug ? tower.slug : null);
+  const [floor, setFloor] = useState<number | null>(tower && initialBlock === tower.slug && floors.some(f => f.block_slug === tower.slug && f.usage === 'residential' && f.floor === Number(initialFloor)) ? Number(initialFloor) : null);
+  const [selection, setSelection] = useState<{ layout: ResidenceLayout; unit?: ResidenceUnit } | null>(null);
+  const [imageError, setImageError] = useState(false);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const block = tower?.slug === blockSlug ? tower : null;
+  const blockFloors = floors.filter(f => f.block_slug === blockSlug);
+  const blockLayouts = layouts.filter(l => l.block_slug === blockSlug);
+  const floorUnits = units.filter(u => u.block_slug === blockSlug && u.floor === floor);
 
-  function selectBlock(slug: string) {
-    setBlockSlug(slug);
+  function selectBlock() {
+    if (!tower) return;
+    setBlockSlug(tower.slug);
     setFloor(null);
-    setUnitNumber(null);
-    setRooms(0);
-    setAvailableOnly(false);
+    setSelection(null);
   }
-  function selectFloor(value: number) {
-    setFloor(value);
-    setUnitNumber(null);
+  function openPlan(layout: ResidenceLayout, unit?: ResidenceUnit) {
+    setSelection({ layout, unit });
+    setImageError(false);
+    dialog.current?.showModal();
   }
 
   return (
     <>
-      {preview && (
-        <div
-          role="status"
-          className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border border-amber-400/20 bg-amber-400/5 px-4 py-3 text-xs leading-relaxed text-amber-200 in-data-[theme=light]:text-amber-800"
-        >
-          <span className="font-bold">◉ Танилцах горим</span>
-          <span>
-            Давхар, талбай, борлуулалтын төлөв нь сонголтыг турших жишээ
-            мэдээлэл болно.
-          </span>
-        </div>
-      )}
       <div className="grid items-start gap-5 min-[1100px]:grid-cols-[minmax(0,1fr)_380px] min-[1400px]:grid-cols-[minmax(0,1fr)_420px]">
-        <section
-          aria-label="Хотхоны интерактив зураг"
-          className="min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-[#111d33] in-data-[theme=light]:border-slate-200 in-data-[theme=light]:bg-white"
-        >
-          <div className="flex items-center justify-between px-5 py-4">
-            <div className="flex items-center gap-2 text-sm font-semibold">
-              <span className="size-1.5 rounded-full bg-sky-400" />
-              Хотхоны ерөнхий төлөвлөгөө
-            </div>
-            <span className="text-[10px] tracking-widest text-slate-400">
-              01 / БЛОК СОНГОХ
-            </span>
-          </div>
-          <div className="relative isolate aspect-square overflow-hidden bg-slate-800">
-            <Image
-              src="/residence-master-plan.jpeg"
-              alt="Luxury Residence хотхоны агаарын зураг. Таван орон сууцны блок болон амины орон сууцнууд."
-              fill
-              sizes="(min-width: 1100px) 65vw, 100vw"
-              className="object-contain"
-              priority
-            />
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-slate-950/40 to-transparent" />
-            <div className="pointer-events-none absolute left-5 top-5 rounded-full border border-white/30 bg-slate-950/55 px-3 py-2 text-[10px] font-semibold tracking-wider text-white backdrop-blur-md">
-              ЗУРГАН ДЭЭР ДАРЖ СОНГОНО УУ
-            </div>
-            <svg
-              viewBox="0 0 720 720"
-              className="absolute inset-0 h-full w-full"
-              aria-label="Орон сууцны блокууд"
-            >
-              {mappedBlocks.map((item) => {
-                const active = item.slug === blockSlug;
-                const lit = active || hovered === item.slug;
-                return (
-                  <g
-                    key={item.slug}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`${item.name} сонгох`}
-                    aria-pressed={active}
-                    className="residence-map-block cursor-pointer outline-none"
-                    onClick={() => selectBlock(item.slug)}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter" || event.key === " ") {
-                        event.preventDefault();
-                        selectBlock(item.slug);
-                      }
-                    }}
-                    onMouseEnter={() => setHovered(item.slug)}
-                    onMouseLeave={() => setHovered(null)}
-                    onFocus={() => setHovered(item.slug)}
-                    onBlur={() => setHovered(null)}
-                  >
-                    <polygon
-                      points={item.points}
-                      fill={lit ? "#2796e6" : "#216aab"}
-                      fillOpacity={lit ? 0.42 : 0.08}
-                      stroke={lit ? "#bce5ff" : "#ffffff"}
-                      strokeOpacity={lit ? 1 : 0.65}
-                      strokeWidth={lit ? 2.5 : 1}
-                      className="transition-colors duration-200"
-                    />
-                    <g
-                      transform={`translate(${item.label[0]}, ${item.label[1]})`}
-                    >
-                      <rect
-                        x="-24"
-                        y="-21"
-                        width="48"
-                        height="42"
-                        rx="12"
-                        fill={active ? "#216aab" : "#0a1729"}
-                        fillOpacity=".95"
-                        stroke={lit ? "#bce5ff" : "#ffffff"}
-                        strokeOpacity={lit ? 1 : 0.65}
-                      />
-                      <text
-                        textAnchor="middle"
-                        dominantBaseline="central"
-                        fill="white"
-                        fontSize="15"
-                        fontWeight="700"
-                      >
-                        {item.slug.toUpperCase()}
-                      </text>
-                    </g>
+        <section aria-label="Хотхоны зураг" className="overflow-hidden rounded-2xl border border-slate-400/20 bg-[#111d33] in-data-[theme=light]:bg-white">
+          <h2 className="px-5 py-4 text-sm font-semibold">Хотхоны ерөнхий төлөвлөгөө</h2>
+          <div className="relative aspect-square bg-slate-800">
+            <Image src="/residence-master-plan.jpeg" alt="Luxury Residence хотхон. Арын 15 давхар N7 блокийг сонгоно уу." fill priority sizes="(min-width: 1100px) 65vw, 100vw" className="object-contain" />
+            {tower && (
+              <svg viewBox="0 0 720 720" className="absolute inset-0 h-full w-full" aria-label="15 давхар барилга сонгох">
+                <g role="button" tabIndex={0} aria-label={`${tower.name} сонгох`} aria-pressed={!!block} onClick={selectBlock} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectBlock(); } }} className="residence-map-block cursor-pointer outline-none">
+                  <polygon points={residenceMap.n7.points} fill="#2796e6" fillOpacity={block ? .42 : .12} stroke="#bce5ff" strokeWidth="2" />
+                  <g transform={`translate(${residenceMap.n7.label[0]}, ${residenceMap.n7.label[1]})`}>
+                    <rect x="-24" y="-21" width="48" height="42" rx="12" fill="#216aab" stroke="white" />
+                    <text textAnchor="middle" dominantBaseline="central" fill="white" fontSize="15" fontWeight="700">N7</text>
                   </g>
-                );
-              })}
-            </svg>
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/80 to-transparent px-5 pb-5 pt-14 text-white">
-              <p className="text-lg font-semibold">
-                {activeMapBlock?.name ?? "Хүссэн байршлаа сонгоорой"}
-              </p>
-              <p className="mt-1 text-xs text-white/75">
-                {activeMapBlock
-                  ? "Блокийн давхар болон байрны сонголтыг доорх хэсгээс харна уу."
-                  : "Блок дээр дарж давхрын мэдээллийг нээнэ."}
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
-            <span className="text-xs text-slate-400 in-data-[theme=light]:text-slate-600">
-              Блокийн шууд сонголт
-            </span>
-            <div className="flex gap-2">
-              {[...mappedBlocks].reverse().map((item) => (
-                <button
-                  key={item.slug}
-                  type="button"
-                  onClick={() => selectBlock(item.slug)}
-                  aria-pressed={blockSlug === item.slug}
-                  className={`min-h-10 min-w-11 cursor-pointer rounded-lg border px-3 text-xs font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-sky-400 ${blockSlug === item.slug ? "border-[#216aab] bg-[#216aab] text-white" : "border-slate-500/25 hover:border-sky-400"}`}
-                >
-                  {item.slug.toUpperCase()}
-                </button>
-              ))}
-            </div>
-          </div>
-          {block && (
-            <a
-              href="#residence-options"
-              className="mx-5 mb-4 flex min-h-11 items-center justify-center rounded-lg bg-[#216aab] px-4 text-sm font-semibold text-white min-[1100px]:hidden"
-            >
-              {block.name} · Давхар сонгох ↓
-            </a>
-          )}
-        </section>
-
-        <section
-          id="residence-options"
-          aria-label="Байр сонголт"
-          className="scroll-mt-24 min-w-0 rounded-2xl border border-white/10 bg-[#111d33] min-[1100px]:sticky min-[1100px]:top-24 in-data-[theme=light]:border-slate-200 in-data-[theme=light]:bg-white"
-        >
-          <ol className="grid grid-cols-3 gap-2 border-b border-slate-400/15 px-5 py-5 text-[11px] font-semibold">
-            {["Блок", "Давхар", "Байр"].map((step, i) => (
-              <li
-                key={step}
-                className={`flex items-center gap-2 ${i === (floor !== null ? 2 : block ? 1 : 0) ? "text-[color:var(--brand-accent)]" : "text-slate-400"}`}
-              >
-                <span className="grid size-6 place-items-center rounded-full border border-current text-[10px]">
-                  {i < (floor !== null ? 2 : block ? 1 : 0) ? "✓" : `0${i + 1}`}
-                </span>
-                {step}
-              </li>
-            ))}
-          </ol>
-          <div className="p-5 min-[1400px]:p-6">
-            {!block ? (
-              <div className="flex min-h-[360px] flex-col items-center justify-center text-center">
-                <div
-                  className="mb-6 grid size-20 place-items-center rounded-2xl border border-sky-400/20 bg-sky-400/5 text-4xl text-[color:var(--brand-accent)]"
-                  aria-hidden="true"
-                >
-                  ⌖
-                </div>
-                <h2 className="text-2xl font-semibold">
-                  Аль блокт амьдрах вэ?
-                </h2>
-                <p className="mt-3 max-w-64 text-sm leading-7 text-slate-400 in-data-[theme=light]:text-slate-600">
-                  Зурган дээрх блок дээр дараарай. Сонгосон блокийн давхар,
-                  байрны мэдээлэл энд харагдана.
-                </p>
-                <span className="mt-7 text-xs text-[color:var(--brand-accent)]">
-                  ← Зургаас эсвэл блокийн дугаараас сонгох
-                </span>
-              </div>
-            ) : (
-              <>
-                <div className="mb-6 flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-[10px] tracking-[.15em] text-slate-400">
-                      СОНГОСОН БЛОК
-                    </p>
-                    <h2 className="mt-1 text-3xl font-semibold">
-                      {block.name}
-                    </h2>
-                    <p className="mt-2 text-xs text-slate-400 in-data-[theme=light]:text-slate-600">
-                      {blockFloors.length
-                        ? `${blockFloors.length} давхар · ${blockAvailability} боломжтой байр`
-                        : "Давхрын мэдээлэл хараахан нэмэгдээгүй"}
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setBlockSlug(null);
-                      setFloor(null);
-                      setUnitNumber(null);
-                    }}
-                    className="grid size-9 cursor-pointer place-items-center rounded-full border border-slate-400/25 text-slate-400 hover:text-[color:var(--brand-accent)]"
-                    aria-label="Блокийн сонголтыг цэвэрлэх"
-                  >
-                    ×
-                  </button>
-                </div>
-                <div className="mb-6">
-                  <div className="mb-3 flex items-center justify-between">
-                    <h3 className="text-sm font-semibold">Давхраа сонгох</h3>
-                    <span className="text-xs text-[color:var(--brand-accent)]">
-                      {floor ? `${floor}-р давхар` : "Сонгоогүй"}
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-5 gap-2">
-                    {blockFloors.map((item) => (
-                      <button
-                        type="button"
-                        key={item.floor}
-                        onClick={() => selectFloor(item.floor)}
-                        aria-pressed={floor === item.floor}
-                        aria-label={`${item.floor}-р давхар, ${item.available} боломжтой байр`}
-                        className={`relative min-h-11 cursor-pointer rounded-lg border text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-sky-400 ${floor === item.floor ? "border-[#216aab] bg-[#216aab] text-white" : "border-slate-400/20 hover:border-sky-400"}`}
-                      >
-                        {item.floor}
-                        <span
-                          className={`absolute bottom-1 left-1/2 size-1 -translate-x-1/2 rounded-full ${item.available ? "bg-sky-300" : "bg-slate-500"}`}
-                        />
-                      </button>
-                    ))}
-                  </div>
-                  {!blockFloors.length && (
-                    <p
-                      role="status"
-                      className="rounded-lg bg-slate-400/5 p-4 text-sm leading-6 text-slate-400"
-                    >
-                      Энэ блокийн мэдээлэл удахгүй нэмэгдэнэ. Өөр блок сонгон
-                      үзнэ үү.
-                    </p>
-                  )}
-                </div>
-                {floor !== null && (
-                  <>
-                    <div className="border-t border-slate-400/15 pt-5">
-                      <label
-                        htmlFor="room-filter"
-                        className="mb-2 block text-xs text-slate-400"
-                      >
-                        Өрөөний тоо
-                      </label>
-                      <select
-                        id="room-filter"
-                        value={rooms}
-                        onChange={(event) => {
-                          setRooms(Number(event.target.value));
-                          setUnitNumber(null);
-                        }}
-                        className="min-h-11 w-full rounded-lg border border-slate-400/25 bg-[#0a1128] px-3 text-sm in-data-[theme=light]:bg-slate-50"
-                      >
-                        <option value={0}>Бүх өрөө</option>
-                        <option value={1}>1 өрөө</option>
-                        <option value={2}>2 өрөө</option>
-                        <option value={3}>3 өрөө</option>
-                        <option value={4}>4 өрөө</option>
-                      </select>
-                      <label className="my-4 flex cursor-pointer items-center gap-2 text-xs text-slate-400 in-data-[theme=light]:text-slate-600">
-                        <input
-                          type="checkbox"
-                          checked={availableOnly}
-                          onChange={(event) => {
-                            setAvailableOnly(event.target.checked);
-                            setUnitNumber(null);
-                          }}
-                          className="size-4 accent-[#216aab]"
-                        />
-                        Зөвхөн боломжтой байрууд
-                      </label>
-                    </div>
-                    <div className="mb-3 flex items-center justify-between text-xs">
-                      <h3 className="font-semibold">
-                        {floor}-р давхрын байрууд
-                      </h3>
-                      <span aria-live="polite" className="text-slate-400">
-                        {visibleUnits.length} байр
-                      </span>
-                    </div>
-                    <div className="grid max-h-[330px] gap-2 overflow-y-auto pr-1">
-                      {visibleUnits.map((unit) => (
-                        <button
-                          type="button"
-                          key={unit.number}
-                          onClick={() => setUnitNumber(unit.number)}
-                          aria-pressed={selectedUnit?.number === unit.number}
-                          className={`flex min-h-20 cursor-pointer items-center gap-3 rounded-xl border p-3 text-left transition-colors focus-visible:outline-2 focus-visible:outline-sky-400 ${selectedUnit?.number === unit.number ? "border-sky-400 bg-sky-400/10" : "border-slate-400/15 hover:border-sky-400/60"}`}
-                        >
-                          <span className="grid size-11 shrink-0 place-items-center rounded-lg bg-slate-400/10 text-xs font-semibold">
-                            {unit.number}
-                          </span>
-                          <span className="min-w-0 flex-1">
-                            <span className="block text-sm font-semibold">
-                              {unit.rooms} өрөө{" "}
-                              <span className="font-normal text-slate-400">
-                                · {Number(unit.area).toLocaleString("en-US")} м²
-                              </span>
-                            </span>
-                            <span
-                              className={`mt-1 inline-block rounded px-1.5 py-0.5 text-[10px] ${statusClasses[unit.status]}`}
-                            >
-                              {labels[unit.status]}
-                            </span>
-                          </span>
-                          <span className="text-slate-400">↗</span>
-                        </button>
-                      ))}
-                      {!visibleUnits.length && (
-                        <p
-                          role="status"
-                          className="rounded-lg border border-dashed border-slate-400/20 p-5 text-sm leading-6 text-slate-400"
-                        >
-                          {units.some(
-                            (u) =>
-                              u.block_slug === blockSlug && u.floor === floor,
-                          )
-                            ? "Энэ шүүлтэд тохирох байр алга. Шүүлтээ өөрчилж үзнэ үү."
-                            : "Энэ давхрын байрны мэдээлэл удахгүй нэмэгдэнэ."}
-                        </p>
-                      )}
-                    </div>
-                  </>
-                )}
-                {selectedUnit && (
-                  <div
-                    className="mt-5 rounded-xl border border-sky-400/30 bg-sky-400/5 p-4"
-                    aria-live="polite"
-                  >
-                    <div className="flex justify-between gap-2">
-                      <p className="text-[10px] font-semibold tracking-wider text-[color:var(--brand-accent)]">
-                        ТАНЫ СОНГОЛТ
-                      </p>
-                      <button
-                        type="button"
-                        aria-label="Байрны сонголтыг цэвэрлэх"
-                        onClick={() => setUnitNumber(null)}
-                        className="cursor-pointer px-1 text-slate-400"
-                      >
-                        ×
-                      </button>
-                    </div>
-                    <h3 className="mt-2 text-xl font-semibold">
-                      {selectedUnit.number} тоот
-                    </h3>
-                    <p className="mt-1 text-xs leading-6 text-slate-400 in-data-[theme=light]:text-slate-600">
-                      {block.name} · {floor}-р давхар
-                      <br />
-                      {selectedUnit.rooms} өрөө ·{" "}
-                      {Number(selectedUnit.area).toLocaleString("en-US")} м² ·{" "}
-                      {labels[selectedUnit.status]}
-                    </p>
-                    {preview ? (
-                      <p className="mt-3 text-xs leading-6 text-amber-300 in-data-[theme=light]:text-amber-800">
-                        Энэ нь жишээ сонголт. Бодит талбай, төлөвийг
-                        борлуулалтын албанаас лавлана уу.
-                      </p>
-                    ) : (
-                      selectedUnit.status !== "available" && (
-                        <p className="mt-3 text-xs text-slate-400">
-                          Энэ байр одоогоор захиалга авах боломжгүй.
-                        </p>
-                      )
-                    )}
-                    <Link
-                      href="/#contact"
-                      className="mt-4 flex min-h-11 items-center justify-center rounded-lg bg-[#216aab] px-4 text-xs font-semibold text-white hover:bg-[#287bbd]"
-                    >
-                      БОРЛУУЛАЛТТАЙ ХОЛБОГДОХ ↗
-                    </Link>
-                  </div>
-                )}
-              </>
+                </g>
+              </svg>
             )}
           </div>
-          <div className="flex items-center gap-2 border-t border-slate-400/15 px-5 py-4 text-[10px] text-slate-400">
-            <span
-              className={`size-1.5 rounded-full ${preview ? "bg-amber-400" : "bg-sky-400"}`}
-            />
-            {preview
-              ? "Жишээ мэдээлэл · Захиалга үүсгэхгүй"
-              : "Нийтлэгдсэн борлуулалтын мэдээлэл"}
+          {tower && <div className="p-4"><button type="button" onClick={selectBlock} aria-pressed={!!block} className="min-h-11 cursor-pointer rounded-lg bg-[#216aab] px-5 text-sm font-semibold text-white">{tower.name} · {tower.total_floors} давхар</button></div>}
+        </section>
+
+        <section className="rounded-2xl border border-slate-400/20 bg-[#111d33] in-data-[theme=light]:bg-white" aria-label="Байр сонголт">
+          <ol className="grid grid-cols-3 gap-2 border-b border-slate-400/15 p-5 text-xs font-semibold">
+            {['Блок', 'Давхар', 'Байр'].map((step, i) => <li key={step} className={i === (floor !== null ? 2 : block ? 1 : 0) ? 'text-[color:var(--brand-accent)]' : 'text-slate-400'}>{i + 1}. {step}</li>)}
+          </ol>
+          <div className="p-5">
+            {!block ? <p className="py-16 text-center text-sm text-slate-400">Зургаас 15 давхар барилгаа сонгоно уу.</p> : <>
+              <h2 className="text-3xl font-semibold">{block.name}</h2>
+              <p className="mt-2 text-xs text-slate-400">{block.total_floors} давхар · {block.garage_floors} гарааш · {block.total_floors - block.garage_floors} орон сууцны давхар</p>
+              <div className="mb-3 mt-6 flex justify-between text-sm"><h3 className="font-semibold">Давхраа сонгох</h3><span className="text-[color:var(--brand-accent)]">{floor !== null ? `${floor}-р давхар` : ''}</span></div>
+              <div className="grid grid-cols-5 gap-2">
+                {blockFloors.map(item => <button key={item.floor} type="button" disabled={item.usage === 'garage'} aria-pressed={floor === item.floor} aria-label={`${item.floor}-р давхар${item.usage === 'garage' ? ', гарааш' : ''}`} onClick={() => { setFloor(item.floor); setSelection(null); }} className={`min-h-12 rounded-lg border text-sm disabled:cursor-default disabled:bg-slate-400/5 disabled:text-slate-500 ${floor === item.floor ? 'border-sky-400 bg-[#216aab] text-white' : 'cursor-pointer border-slate-400/20 hover:border-sky-400 disabled:hover:border-slate-400/20'}`}>{item.floor}{item.usage === 'garage' && <span className="block text-[9px]">Гарааш</span>}</button>)}
+              </div>
+              {floor !== null && <div className="mt-6 space-y-3 border-t border-slate-400/15 pt-5">
+                <h3 className="text-sm font-semibold">Байраа сонгох</h3>
+                {!floorUnits.length && blockLayouts.length > 0 && <p className="text-xs leading-5 text-slate-400">Сууцны төрлөө сонгож план болон дэлгэрэнгүй мэдээллийг үзнэ үү. Сул байрны тоот, борлуулалтын төлөв хараахан баталгаажаагүй.</p>}
+                {!floorUnits.length && !blockLayouts.length && <p role="status" className="text-sm leading-6 text-slate-400">{inventoryUnavailable ? 'Байрны мэдээллийг одоогоор ачаалж чадсангүй. Түр хүлээгээд хуудсаа дахин ачаална уу.' : 'Энэ давхрын байрны мэдээлэл хараахан нэмэгдээгүй байна.'}</p>}
+                {floorUnits.length ? floorUnits.map(unit => {
+                  const layout = blockLayouts.find(l => l.code === unit.layout_code);
+                  return <button key={unit.number} type="button" disabled={!layout} onClick={() => layout && openPlan(layout, unit)} className="flex min-h-20 w-full cursor-pointer items-center justify-between gap-3 rounded-xl border border-sky-400/20 bg-sky-400/5 p-4 text-left hover:border-sky-400 disabled:cursor-default disabled:opacity-50"><span><span className="block text-sm font-semibold">{unit.number} тоот · {unit.area} м²</span><span className="mt-1 block text-xs text-slate-400">{unit.rooms} өрөө · {statusLabels[unit.status]}</span></span><span className="text-xs text-[color:var(--brand-accent)]">План ↗</span></button>;
+                }) : blockLayouts.map(layout => <button key={layout.code} type="button" onClick={() => openPlan(layout)} className="flex min-h-20 w-full cursor-pointer items-center justify-between gap-3 rounded-xl border border-sky-400/20 bg-sky-400/5 p-4 text-left hover:border-sky-400"><span className="flex items-center gap-3">{layout.plan_image && <Image src={layout.plan_image} alt={`${layout.code} план`} width={96} height={72} unoptimized className="h-18 w-24 rounded-md bg-white object-contain" />}<span><span className="block text-sm font-semibold">{layout.code} сууц · {layout.area} м²</span><span className="mt-1 block text-xs text-slate-400">{layout.rooms} өрөө</span></span></span><span className="text-xs text-[color:var(--brand-accent)]">Дэлгэрэнгүй ↗</span></button>)}
+              </div>}
+            </>}
           </div>
         </section>
       </div>
-      <p className="mt-4 text-xs leading-6 text-slate-400">
-        Блокийн тэмдэглэгээ нь байршлыг сонгоход зориулсан. Нарийвчилсан
-        төлөвлөлт, мэдээллийг борлуулалтын албанаас лавлана уу.
-      </p>
+      <dialog ref={dialog} aria-labelledby="plan-title" onClick={e => { if (e.target === e.currentTarget) dialog.current?.close(); }} onClose={() => setSelection(null)} className="fixed inset-0 m-auto max-h-[92dvh] w-[calc(100%-2rem)] max-w-6xl overflow-y-auto rounded-2xl border border-slate-300 bg-white p-0 text-slate-900 shadow-2xl backdrop:bg-slate-950/80">
+        {selection && block && floor !== null && <>
+          <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-slate-200 bg-white px-5 py-3">
+            <div><h2 id="plan-title" className="text-sm font-semibold">{selection.unit ? `${selection.unit.number} тоот` : `${selection.layout.code} сууц`} · {selection.layout.area} м² · {selection.layout.rooms} өрөө</h2><p className="mt-1 text-xs text-slate-500">{block.name} · {floor}-р давхар</p></div>
+            <button type="button" onClick={() => dialog.current?.close()} aria-label="План зураг хаах" className="grid size-11 shrink-0 cursor-pointer place-items-center rounded-full bg-slate-100 text-2xl">×</button>
+          </div>
+          <div className="grid gap-6 p-5 min-[900px]:grid-cols-[minmax(0,1fr)_280px]">
+            <div>{selection.layout.plan_image && !imageError ? <Image key={selection.layout.code} src={selection.layout.plan_image} alt={`${selection.layout.code} сууцны план зураг`} width={1600} height={1195} unoptimized onError={() => setImageError(true)} className="h-auto w-full" /> : <p className="rounded-lg bg-slate-50 p-8 text-sm text-slate-500">План зураг хараахан нэмэгдээгүй.</p>}</div>
+            <aside className="space-y-6"><section><h3 className="mb-3 font-semibold">Өрөөнүүдийн талбай</h3><dl className="divide-y divide-slate-100">{selection.layout.spaces.map(([name, area], index) => <div key={index} className="flex justify-between gap-3 py-2 text-sm"><dt>{index + 1}. {name}</dt><dd className="shrink-0 font-medium">{area} м²</dd></div>)}</dl></section>
+            {inventoryUnavailable ? <p className="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">Байрны борлуулалтын мэдээлэл болон хүсэлт илгээх үйлчилгээ түр боломжгүй байна.</p> : selection.unit && selection.unit.status !== 'available' ? <p className="text-sm text-slate-500">{statusLabels[selection.unit.status]}</p> : <InquiryForm key={`${block.slug}-${floor}-${selection.layout.code}-${selection.unit?.number ?? ''}`} block={block.slug} floor={floor} layout={selection.layout.code} unit={selection.unit?.number} />}
+            </aside>
+          </div>
+          <section className="mx-5 mb-5 rounded-xl border border-slate-200 bg-slate-50 p-5"><h3 className="font-semibold">3D дизайн · Интерьер</h3>{residenceDesigns[selection.layout.code]?.length ? <div className="mt-4 grid gap-4 min-[700px]:grid-cols-2">{residenceDesigns[selection.layout.code].map(design => <figure key={design.src}><Image src={design.src} alt={design.caption} width={1200} height={800} unoptimized className="h-auto w-full rounded-lg" /><figcaption className="mt-2 text-sm text-slate-600">{design.caption}</figcaption></figure>)}</div> : <p className="mt-2 text-sm text-slate-500">Энэ сууцны 3D дизайн, интерьерийн зургууд удахгүй нэмэгдэнэ.</p>}</section>
+        </>}
+      </dialog>
     </>
   );
 }

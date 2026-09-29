@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getResidenceInventory } from "@/lib/catalog";
-import { createPreviewInventory } from "@/lib/residence";
+import { residenceTower, residenceTowerFloors, type ResidenceLayout } from "@/lib/residence";
+import DataNotice from "../data-notice";
 import BrandLogo from "../brand-logo";
 import ThemeToggle from "../theme-toggle";
 import { headerClass, navToolsClass } from "../ui";
+import { residenceLayouts } from "@/lib/residence-layouts";
 import ResidenceSelector from "./residence-selector";
 
 export const metadata: Metadata = {
@@ -20,8 +22,16 @@ export default async function MasterPlan({
     getResidenceInventory(),
     searchParams,
   ]);
-  const preview = inventory.error;
-  const data = preview ? createPreviewInventory() : inventory;
+  const layouts: ResidenceLayout[] = inventory.error
+    ? residenceLayouts
+    : inventory.layouts.map((layout) => {
+        const supplied = residenceLayouts.find((item) => item.code === layout.code);
+        return {
+          ...layout,
+          plan_image: layout.plan_image || supplied?.plan_image || null,
+        };
+      });
+
   return (
     <>
       <header className={headerClass}>
@@ -68,11 +78,13 @@ export default async function MasterPlan({
             Хотхоны тухай ↗
           </Link>
         </div>
+        <DataNotice error={inventory.error} empty={!inventory.blocks.length} />
         <ResidenceSelector
-          blocks={inventory.blocks}
-          floors={data.floors}
-          units={data.units}
-          preview={preview}
+          blocks={inventory.error ? [residenceTower] : inventory.blocks}
+          floors={inventory.error ? residenceTowerFloors : inventory.floors}
+          inventoryUnavailable={inventory.error}
+          units={inventory.units}
+          layouts={layouts}
           initialBlock={params.block}
           initialFloor={params.floor}
         />

@@ -32,7 +32,7 @@ export default async function Home() {
         <BrandLogo />
         <nav className="flex gap-11 text-xs font-bold tracking-[.08em] max-[760px]:hidden [&_a]:border-b-2 [&_a]:border-transparent [&_a]:py-2.5 [&_a]:text-[#c4ccdc] [&_a]:hover:border-[var(--brand-accent)] [&_a]:hover:text-[color:var(--brand-accent)] in-data-[theme=light]:[&_a]:text-[#526078]">
           <Link className="!border-[var(--brand-accent)] !text-[color:var(--brand-accent)]" href="/">Нүүр</Link>
-          <a href="#projects">Төслүүд</a><a href="#about">Бидний тухай</a><a href="#contact">Холбоо барих</a>
+         <a href="#about">Бидний тухай</a> <a href="#projects">Төслүүд</a><a href="#contact">Холбоо барих</a>
         </nav>
         <div className={navToolsClass}><ThemeToggle /><button className={menuClass} aria-label="Цэс">☰</button></div>
       </header>

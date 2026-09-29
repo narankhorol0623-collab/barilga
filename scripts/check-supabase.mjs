@@ -10,9 +10,10 @@ if (!url || !/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(url) || !key) {
 
 const tables = {
   catalog_projects: "slug,name,meta,status,image,sort_order",
-  catalog_blocks: "slug,name,href,sort_order",
-  catalog_floors: "block_slug,floor,available,total",
-  catalog_units: "block_slug,floor,number,rooms,area,status",
+  catalog_blocks: "slug,name,href,sort_order,selectable,total_floors,garage_floors",
+  catalog_floors: "block_slug,floor,available,total,usage",
+  catalog_units: "block_slug,floor,number,rooms,area,status,layout_code",
+  catalog_layouts: "block_slug,code,area,rooms,plan_image",
 };
 for (const [table, columns] of Object.entries(tables)) {
   try {
