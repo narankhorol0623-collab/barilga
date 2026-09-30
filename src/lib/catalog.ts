@@ -1,6 +1,11 @@
 import "server-only";
 import { connection } from "next/server";
-import type { ResidenceBlock, ResidenceFloor, ResidenceUnit, ResidenceLayout } from "./residence";
+import type {
+  ResidenceBlock,
+  ResidenceFloor,
+  ResidenceUnit,
+  ResidenceLayout,
+} from "./residence";
 
 export type ResidenceInventory = {
   blocks: ResidenceBlock[];
@@ -27,7 +32,6 @@ export type Unit = {
   status: "available" | "reserved" | "sold";
 };
 
-// Explicit projections and published filters keep private fields out of page props.
 async function readCatalog<T>(
   table: string,
   query: string,
@@ -36,7 +40,6 @@ async function readCatalog<T>(
   const url = process.env.SUPABASE_URL?.trim();
   const key = process.env.SUPABASE_PUBLISHABLE_KEY?.trim();
   if (!url || !key || !/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(url)) {
-    // Incomplete setup is handled by DataNotice, not a Next.js error overlay.
     console.warn(
       "Supabase catalog is not configured. Set SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY, then run npm run db:check.",
     );

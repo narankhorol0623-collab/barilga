@@ -9,7 +9,7 @@ export type ResidenceFloor = {
   floor: number;
   available: number | null;
   total: number | null;
-  usage: 'residential' | 'garage';
+  usage: "residential" | "garage";
 };
 export type ResidenceLayout = {
   block_slug: string;
@@ -26,28 +26,38 @@ export type ResidenceUnit = {
   rooms: number;
   area: number;
   layout_code: string | null;
-  status: 'available' | 'reserved' | 'sold';
+  status: "available" | "reserved" | "sold";
 };
-// Confirmed building geometry remains browsable when live inventory is unavailable.
-// These floors carry no apartment numbers or availability claims.
+
 export const residenceTower: ResidenceBlock = {
-  slug: 'n7', name: 'N7 Блок', total_floors: 15, garage_floors: 2,
+  slug: "n7",
+  name: "N7 Блок",
+  total_floors: 15,
+  garage_floors: 2,
 };
-export const residenceTowerFloors: ResidenceFloor[] = Array.from({ length: 15 }, (_, index) => {
-  const floor = 15 - index;
-  return {
-    block_slug: 'n7', floor, available: null, total: null,
-    usage: floor <= 2 ? 'garage' : 'residential',
-  };
-});
-// Only the confirmed rear tower has an interactive outline.
+export const residenceTowerFloors: ResidenceFloor[] = Array.from(
+  { length: 15 },
+  (_, index) => {
+    const floor = 15 - index;
+    return {
+      block_slug: "n7",
+      floor,
+      available: null,
+      total: null,
+      usage: floor <= 2 ? "garage" : "residential",
+    };
+  },
+);
 export const residenceMap = {
   n7: {
-    points: '313,194 343,182 375,191 379,311 347,324 314,312',
+    points: "313,194 343,182 375,191 379,311 347,324 314,312",
     label: [346, 254] as const,
   },
 };
 
 export function normalizePhone(value: string) {
-  return value.trim().replace(/^\+976[ -]?/, '').replace(/[ -]/g, '');
+  return value
+    .trim()
+    .replace(/^\+976[ -]?/, "")
+    .replace(/[ -]/g, "");
 }
