@@ -1,4 +1,18 @@
-import LoginForm from './login-form';
-export default function AdminLogin() {
-  return <main className="mx-auto mt-24 w-full max-w-md px-5"><h1 className="mb-6 text-2xl font-semibold">Борлуулалтын админ</h1><LoginForm /></main>;
+"use client";
+
+import { useRouter } from "next/navigation";
+import LoginPage from "../LoginPage";
+
+export default function Page() {
+  const router = useRouter();
+
+  const handleLogin = () => {
+    router.push("/");
+  };
+
+  return (
+    <div className="fixed inset-0 w-full h-full flex items-center justify-center bg-background z-50">
+      <LoginPage onLogin={handleLogin} />
+    </div>
+  );
 }
