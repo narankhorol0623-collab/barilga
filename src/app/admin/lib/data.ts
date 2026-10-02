@@ -4,7 +4,7 @@ export const kpiStats: KpiStat[] = [
   {
     id: "units",
     label: "Нийт байр",
-    value: 1248,
+    value: 120,
     icon: "domain",
     accent: "secondary",
     trend: "flat",
