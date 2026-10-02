@@ -1,16 +1,37 @@
 "use client";
-
 import { useState } from "react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
-import Link from "next/link";
 
-const navItems = [
-  { icon: "dashboard", label: "Хяналтын самбар" },
-  { icon: "architecture", label: "Төслүүд" },
-  { icon: "inventory_2", label: "Борлуулалт ба үлдэгдэл" },
-  { icon: "edit_note", label: "Агуулгын удирдлага" },
-  { icon: "group", label: "Хэрэглэгч ба эрх" },
-  { icon: "settings", label: "Тохиргоо" },
+// 1. Тохирох утгуудын type-ийг зарлана
+type SectionType =
+  | "dashboard"
+  | "projects"
+  | "inventory"
+  | "content"
+  | "leads"
+  | "settings";
+
+// 2. Props-ийн interface-ийг үүсгэнэ
+interface SidebarProps {
+  activeSection: SectionType;
+  onNavigate: React.Dispatch<React.SetStateAction<SectionType>>;
+  onLogout: () => void;
+}
+
+// 3. Nav items массивын төрөл ба утгууд
+interface NavItem {
+  id: SectionType;
+  label: string;
+  icon: string;
+}
+
+const navItems: NavItem[] = [
+  { id: "dashboard", label: "Хяналтын панел", icon: "dashboard" },
+  { id: "projects", label: "Төслүүд", icon: "folder" },
+  { id: "inventory", label: "Бараа материал", icon: "inventory_2" },
+  { id: "content", label: "Контент", icon: "article" },
+  { id: "leads", label: "Хүсэлтүүд", icon: "group" },
+  { id: "settings", label: "Тохиргоо", icon: "settings" },
 ];
 
 const listVariants = {
@@ -25,8 +46,11 @@ const itemVariants: Variants = {
   show: { opacity: 1, x: 0, transition: { duration: 0.35, ease: "easeOut" } },
 };
 
-export default function Sidebar() {
-  const [activeLabel, setActiveLabel] = useState(navItems[0].label);
+export default function Sidebar({
+  activeSection,
+  onNavigate,
+  onLogout,
+}: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => setIsOpen((prev) => !prev);
@@ -69,9 +93,9 @@ export default function Sidebar() {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
-            className="font-headline-sm text-headline-sm font-bold text-primary"
+            className="font-headline-sm text-headline-sm font-bold text-primary flex items-center gap-2"
           >
-            <img src="/good-supply-logo.png" alt="" />
+            <img src="/good-supply-logo.png" alt="" className="h-8 w-auto" />
             <h1 className="text-xl font-bold text-center text-primary uppercase">
               &quot;Гүнд Саплай&quot;
             </h1>
@@ -85,15 +109,15 @@ export default function Sidebar() {
           className="flex-1 overflow-y-auto custom-scrollbar py-4 space-y-1"
         >
           {navItems.map((item) => {
-            const isActive = item.label === activeLabel;
+            const isActive = item.id === activeSection;
             return (
               <motion.button
-                key={item.label}
+                key={item.id}
                 type="button"
                 variants={itemVariants}
                 whileHover={{ x: isActive ? 0 : 4 }}
                 onClick={() => {
-                  setActiveLabel(item.label);
+                  onNavigate(item.id);
                   setIsOpen(false); // Цэс дээр дарахад гар утсан дээр sidebar хаагдана
                 }}
                 className={`relative w-full flex items-center gap-3 px-4 py-3 text-left transition-colors duration-200 ease-in-out group ${
@@ -144,13 +168,14 @@ export default function Sidebar() {
                 Администратор
               </p>
             </div>
-            <Link
-              href="/login"
+            <button
+              type="button"
+              onClick={onLogout}
               className="ml-auto text-on-surface-variant hover:text-error transition-colors p-1 flex items-center justify-center"
               title="Гарах"
             >
               <span className="material-symbols-outlined text-lg">logout</span>
-            </Link>
+            </button>
           </div>
         </div>
       </aside>

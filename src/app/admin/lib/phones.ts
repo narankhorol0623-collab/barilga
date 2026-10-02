@@ -6,6 +6,9 @@ export type PhoneSubmission = {
   phone: string; // normalize hiisen: 8 orontoi
   name: string | null;
   apartmentId: string | null;
+  block: string | null;
+  floor: number | null;
+  layout: string | null;
   createdAt: string; // ISO
 };
 

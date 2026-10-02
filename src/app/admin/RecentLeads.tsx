@@ -1,64 +1,110 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { leads } from "./lib/data";
-import type { Lead, LeadStage } from "./lib/types";
+import type { PhoneSubmission } from "./lib/phones";
 
-const stageBadge: Record<LeadStage, string> = {
-  Холбогдсон: "bg-surface-variant text-on-surface",
-  "Дахин холбогдох":
-    "bg-error-container/20 border border-error-container/50 text-error",
-  Хаагдсан: "bg-surface-variant text-on-surface-variant",
-};
-
-function LeadCard({ lead, index }: { lead: Lead; index: number }) {
+function LeadCard({
+  lead,
+  index,
+  onDelete,
+}: {
+  lead: PhoneSubmission;
+  index: number;
+  onDelete: (id: string) => void;
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.1 }}
       whileHover={{ x: 2 }}
-      className={`p-3 rounded border border-outline-variant/50 bg-surface-container-low hover:border-[#1E2D50] hover:bg-[#1E2D50]/30 transition-all cursor-pointer ${
-        lead.stage === "Хаагдсан" ? "opacity-75" : ""
-      }`}
+      className="p-3 rounded border border-outline-variant/50 bg-surface-container-low hover:border-[#1E2D50] hover:bg-[#1E2D50]/30 transition-all"
     >
       <div className="flex justify-between items-start mb-1 gap-2">
         <span className="font-label-md text-xs sm:text-label-md font-bold text-on-surface truncate">
-          {lead.name}
+          {lead.name || "Нэрээ үлдээгээгүй"}
         </span>
-        {lead.isNew && (
+        {
           <motion.span
             className="w-2 h-2 rounded-full bg-primary-container shadow-[0_0_4px_rgba(0,245,212,0.8)] shrink-0 mt-1"
             animate={{ opacity: [1, 0.4, 1] }}
             transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
           />
-        )}
+        }
       </div>
       <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-[11px] sm:text-xs text-on-surface-variant mb-2">
         <span className="flex items-center gap-1 truncate max-w-[150px] sm:max-w-none">
           <span className="material-symbols-outlined text-[13px] sm:text-[14px] shrink-0">
-            {lead.contactIcon}
+            call
           </span>
-          <span className="truncate">{lead.contact}</span>
+          <span className="truncate">{lead.phone}</span>
         </span>
-        <span className="truncate">{lead.project}</span>
+        <span className="truncate">
+          {lead.apartmentId
+            ? `${lead.block?.toUpperCase() || ""} ${lead.floor ? `${lead.floor}-р давхар · ` : ""}№${lead.apartmentId}${lead.layout ? ` · ${lead.layout} сууц` : ""}`.trim()
+            : "Ерөнхий хүсэлт"}
+        </span>
       </div>
       <div className="flex items-center justify-between gap-2">
-        <span
-          className={`px-2 py-0.5 rounded text-[10px] font-label-sm shrink-0 ${stageBadge[lead.stage]}`}
-        >
-          {lead.stage}
+        <span className="px-2 py-0.5 rounded text-[10px] font-label-sm shrink-0 bg-primary-container/10 text-primary-container">
+          Шинэ хүсэлт
         </span>
         <span className="text-[10px] text-on-surface-variant shrink-0">
-          {lead.timeAgo}
+          {new Date(lead.createdAt).toLocaleString("mn-MN")}
         </span>
       </div>
+      <button
+        type="button"
+        onClick={() => onDelete(lead.id)}
+        className="mt-2 text-xs text-error hover:underline"
+      >
+        Устгах
+      </button>
     </motion.div>
   );
 }
 
 export default function RecentLeads() {
-  const newCount = leads.filter((lead) => lead.isNew).length;
+  const [leads, setLeads] = useState<PhoneSubmission[]>([]);
+  const [error, setError] = useState("");
+  async function refresh() {
+    const response = await fetch("/admin/api/get-phonenumber", {
+      cache: "no-store",
+    });
+    const data = await response.json();
+    if (!response.ok)
+      throw new Error(data.error || "Хүсэлтүүдийг татаж чадсангүй");
+    setLeads(data.phoneNumbers);
+  }
+  useEffect(() => {
+    let active = true;
+    fetch("/admin/api/get-phonenumber", { cache: "no-store" })
+      .then(async (response) => {
+        const data = await response.json();
+        if (!response.ok)
+          throw new Error(data.error || "Хүсэлтүүдийг татаж чадсангүй");
+        return data.phoneNumbers as PhoneSubmission[];
+      })
+      .then((data) => {
+        if (active) setLeads(data);
+      })
+      .catch((e: Error) => {
+        if (active) setError(e.message);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+  async function remove(id: string) {
+    const response = await fetch(
+      "/admin/api/delete-phonenumber?id=" + encodeURIComponent(id),
+      { method: "DELETE" },
+    );
+    if (response.ok) refresh().catch((e) => setError(e.message));
+    else setError("Хүсэлтийг устгаж чадсангүй");
+  }
+  const newCount = leads.length;
 
   return (
     <div className="glass-card p-4 sm:p-5 flex flex-col w-full overflow-hidden">
@@ -74,8 +120,18 @@ export default function RecentLeads() {
         </span>
       </div>
       <div className="flex-1 space-y-3 sm:space-y-4 overflow-y-auto custom-scrollbar pr-1 sm:pr-2 max-h-[350px] sm:max-h-none">
+        {error && (
+          <p role="alert" className="text-sm text-error">
+            {error}
+          </p>
+        )}
+        {!leads.length && !error && (
+          <p className="text-sm text-on-surface-variant">
+            Одоогоор хүсэлт алга.
+          </p>
+        )}
         {leads.map((lead, index) => (
-          <LeadCard key={lead.id} lead={lead} index={index} />
+          <LeadCard key={lead.id} lead={lead} index={index} onDelete={remove} />
         ))}
       </div>
     </div>

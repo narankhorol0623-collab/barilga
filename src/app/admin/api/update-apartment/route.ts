@@ -15,7 +15,6 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: "Oldsongui" }, { status: 404 });
     }
 
-    // Zuvhun ilgeesen talbaruudiig shinechilne
     if (number !== undefined) apartment.number = String(number);
     if (floor !== undefined)
       apartment.floor = floor === null ? null : Number(floor);
