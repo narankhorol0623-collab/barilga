@@ -1,7 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
-import { submitInquiry } from "./actions";
+import { useState } from "react";
 
 export default function InquiryForm({
   block,
@@ -14,10 +13,8 @@ export default function InquiryForm({
   layout: string;
   unit?: string;
 }) {
-  const [state, action, pending] = useActionState(submitInquiry, {
-    success: false,
-    message: "",
-  });
+  const [state, setState] = useState({ success: false, message: "" });
+  const [pending, setPending] = useState(false);
   if (state.success)
     return (
       <p
@@ -28,7 +25,34 @@ export default function InquiryForm({
       </p>
     );
   return (
-    <form action={action} className="space-y-3">
+    <form className="space-y-3" onSubmit={async (event) => {
+      event.preventDefault();
+      const form = new FormData(event.currentTarget);
+      setPending(true);
+      setState({ success: false, message: "" });
+      try {
+        const response = await fetch("/admin/api/submit-phonenumber", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            phone: form.get("phone"),
+            consent: form.get("consent") === "on",
+            block: form.get("block"),
+            floor: Number(form.get("floor")),
+            layout: form.get("layout"),
+            unit: form.get("unit") || null,
+          }),
+        });
+        const result = await response.json();
+        setState(response.ok
+          ? { success: true, message: "Хүсэлт хадгалагдлаа. Борлуулалтын ажилтан тантай холбогдоно." }
+          : { success: false, message: result.error || "Хүсэлтийг хадгалж чадсангүй. Дахин оролдоно уу." });
+      } catch {
+        setState({ success: false, message: "Холболт амжилтгүй боллоо. Дахин оролдоно уу." });
+      } finally {
+        setPending(false);
+      }
+    }}>
       <input type="hidden" name="block" value={block} />
       <input type="hidden" name="floor" value={floor} />
       <input type="hidden" name="layout" value={layout} />
