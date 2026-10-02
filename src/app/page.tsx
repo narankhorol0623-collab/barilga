@@ -90,9 +90,6 @@ export default async function Home() {
         </nav>
         <div className={navToolsClass}>
           <ThemeToggle />
-          <button className={menuClass} aria-label="Цэс">
-            ☰
-          </button>
         </div>
       </header>
 
