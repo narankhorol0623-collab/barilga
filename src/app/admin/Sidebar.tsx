@@ -28,7 +28,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { id: "dashboard", label: "Хяналтын панел", icon: "dashboard" },
   { id: "projects", label: "Төслүүд", icon: "folder" },
-  { id: "inventory", label: "Бараа материал", icon: "inventory_2" },
+  { id: "inventory", label: "Байр бүртгэл", icon: "inventory_2" },
   { id: "content", label: "Контент", icon: "article" },
   { id: "leads", label: "Хүсэлтүүд", icon: "group" },
   { id: "settings", label: "Тохиргоо", icon: "settings" },
@@ -135,9 +135,7 @@ export default function Sidebar({
                 )}
                 <span
                   className={`relative material-symbols-outlined transition-shadow ${
-                    isActive
-                      ? "text-primary group-hover:drop-shadow-[0_0_8px_rgba(0,245,212,0.5)]"
-                      : ""
+                    isActive ? "text-primary admin-accent-glow-text" : ""
                   }`}
                 >
                   {item.icon}
@@ -165,7 +163,7 @@ export default function Sidebar({
                 ГҮНД САПЛАЙ — УДИРДЛАГА
               </p>
               <p className="font-label-sm text-label-sm text-on-surface-variant truncate">
-                Администратор
+                Админ
               </p>
             </div>
             <button

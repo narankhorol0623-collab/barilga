@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import AdminThemeToggle from "./AdminThemeToggle";
 
 interface LoginPageProps {
   onLogin: () => void;
@@ -37,6 +38,7 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
 
   return (
     <div className="admin-login-screen w-full">
+      <AdminThemeToggle className="admin-login-theme-toggle" />
       <section className="admin-login-card">
         <div>
           <h1 className="admin-login-heading">ГҮНД САПЛАЙ — УДИРДЛАГА</h1>
@@ -47,7 +49,7 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
 
         {error && (
           <div
-            className="mb-4 rounded-lg border border-red-400/30 bg-red-500/10 p-3 text-center text-sm font-medium text-red-300"
+            className="mb-4 rounded-lg border border-error/30 bg-error-container/20 p-3 text-center text-sm font-medium text-error"
             role="alert"
           >
             {error}

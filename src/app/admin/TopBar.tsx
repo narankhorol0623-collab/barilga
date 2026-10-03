@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import AdminThemeToggle from "./AdminThemeToggle";
 
 export default function TopBar() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -22,7 +23,7 @@ export default function TopBar() {
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-8 py-1.5 bg-[#0B132B]  border-[#1E2D50] rounded text-on-surface font-body-md focus:outline-none  focus:ring-1 focus:ring-primary-container transition-all placeholder:text-on-surface-variant"
+            className="w-full pl-10 pr-8 py-1.5 bg-surface-container-lowest border border-outline-variant rounded text-on-surface font-body-md focus:outline-none focus:ring-1 focus:ring-primary-container transition-all placeholder:text-on-surface-variant"
             placeholder="Хайх..."
             type="text"
           /> */}
@@ -60,12 +61,10 @@ export default function TopBar() {
           />
         </button>
 
-        <button className="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
-          <span className="material-symbols-outlined">light_mode</span>
-        </button>
+        <AdminThemeToggle className="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors" />
 
         <motion.button
-          whileHover={{ boxShadow: "0 0 15px rgba(0, 245, 212, 0.3)" }}
+          whileHover={{ boxShadow: "0 0 15px color-mix(in srgb, var(--color-primary-container) 30%, transparent)" }}
           whileTap={{ scale: 0.95 }}
           className="bg-primary-container text-[#080E1E] px-3 sm:px-4 py-2 rounded font-label-md text-label-md font-bold flex items-center gap-2 transition-colors whitespace-nowrap"
         >
@@ -93,7 +92,7 @@ export default function TopBar() {
                 autoFocus
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-8 py-2 bg-[#0B132B] border border-[#1E2D50] rounded text-on-surface font-body-md focus:outline-none focus:border-primary-container transition-all placeholder:text-on-surface-variant"
+                className="w-full pl-10 pr-8 py-2 bg-surface-container-lowest border border-outline-variant rounded text-on-surface font-body-md focus:outline-none focus:border-primary-container transition-all placeholder:text-on-surface-variant"
                 placeholder="Хайх..."
                 type="text"
               />

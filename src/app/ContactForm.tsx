@@ -45,7 +45,9 @@ export default function ContactForm() {
       setConsent(false);
     } catch (err) {
       setStatus("error");
-      setErrorMessage(err instanceof Error ? err.message : "Илгээхэд алдаа гарлаа.");
+      setErrorMessage(
+        err instanceof Error ? err.message : "Илгээхэд алдаа гарлаа.",
+      );
     }
   };
 
@@ -81,9 +83,10 @@ export default function ContactForm() {
               value={phone}
               onChange={(e) => {
                 const digits = e.target.value.replace(/\D/g, "");
-                const local = digits.startsWith("976") && digits.length > 8
-                  ? digits.slice(3)
-                  : digits;
+                const local =
+                  digits.startsWith("976") && digits.length > 8
+                    ? digits.slice(3)
+                    : digits;
                 setPhone(local.slice(0, 8));
               }}
               placeholder="99112233"
@@ -94,7 +97,10 @@ export default function ContactForm() {
             />
           </div>
 
-          <label htmlFor="contact-consent" className="flex items-start gap-2 text-left text-xs leading-5 text-[#b7c0d2] sm:order-3 sm:basis-full in-data-[theme=light]:text-[#526078]">
+          <label
+            htmlFor="contact-consent"
+            className="flex items-start gap-2 text-left text-xs leading-5 text-[#b7c0d2] sm:order-3 sm:basis-full in-data-[theme=light]:text-[#526078]"
+          >
             <input
               id="contact-consent"
               type="checkbox"
@@ -116,7 +122,9 @@ export default function ContactForm() {
         </form>
 
         {status === "error" && (
-          <p className="mt-2 text-sm font-medium text-red-400">{errorMessage}</p>
+          <p className="mt-2 text-sm font-medium text-red-400">
+            {errorMessage}
+          </p>
         )}
 
         {status === "success" && (

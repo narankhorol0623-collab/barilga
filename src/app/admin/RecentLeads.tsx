@@ -21,7 +21,7 @@ function LeadCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.1 }}
       whileHover={{ x: 2 }}
-      className="p-3 rounded border border-outline-variant/50 bg-surface-container-low hover:border-[#1E2D50] hover:bg-[#1E2D50]/30 transition-all"
+      className="p-3 rounded border border-outline-variant/50 bg-surface-container-low hover:border-outline-variant hover:bg-surface-container transition-all"
     >
       <div className="flex justify-between items-start mb-1 gap-2">
         <span className="font-label-md text-xs sm:text-label-md font-bold text-on-surface truncate">
@@ -29,7 +29,7 @@ function LeadCard({
         </span>
         {
           <motion.span
-            className="w-2 h-2 rounded-full bg-primary-container shadow-[0_0_4px_rgba(0,245,212,0.8)] shrink-0 mt-1"
+            className="w-2 h-2 rounded-full bg-primary-container admin-accent-glow-strong shrink-0 mt-1"
             animate={{ opacity: [1, 0.4, 1] }}
             transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
           />
