@@ -117,6 +117,10 @@ export default function RecentLeads() {
           return;
         }
         setAuthRequired(false);
+        if (!session.authorized) {
+          setError("Та нэвтэрсэн байна. Хэрэглэгчдийн хүсэлтийг харахад админ эрх шаардлагатай.");
+          return;
+        }
         void load();
         interval = window.setInterval(load, 10_000);
       })

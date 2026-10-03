@@ -1,10 +1,14 @@
 import { NextResponse } from "next/server";
-import { getAdminToken } from "@/lib/admin";
+import { getUserToken, validateAdmin } from "@/lib/admin";
 
 export async function GET() {
   try {
-    return NextResponse.json({ authenticated: Boolean(await getAdminToken()) });
+    const token = await getUserToken();
+    return NextResponse.json({
+      authenticated: Boolean(token),
+      authorized: token ? await validateAdmin(token) : false,
+    });
   } catch {
-    return NextResponse.json({ authenticated: false }, { status: 503 });
+    return NextResponse.json({ authenticated: false, authorized: false }, { status: 503 });
   }
 }
