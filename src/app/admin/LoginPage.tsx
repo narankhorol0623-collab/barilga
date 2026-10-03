@@ -24,10 +24,13 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
         body: JSON.stringify({ email, password }),
       });
       const result = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(result.error || "Нэвтрэхэд алдаа гарлаа.");
+      if (!response.ok)
+        throw new Error(result.error || "Нэвтрэхэд алдаа гарлаа.");
       onLogin();
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Нэвтрэхэд алдаа гарлаа.");
+      setError(
+        cause instanceof Error ? cause.message : "Нэвтрэхэд алдаа гарлаа.",
+      );
     } finally {
       setPending(false);
     }
@@ -86,7 +89,11 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
             />
           </div>
 
-          <button type="submit" disabled={pending} className="admin-login-submit w-full disabled:opacity-60">
+          <button
+            type="submit"
+            disabled={pending}
+            className="admin-login-submit w-full disabled:opacity-60"
+          >
             {pending ? "Нэвтэрч байна…" : "Нэвтрэх"}
           </button>
         </form>

@@ -18,3 +18,12 @@ export async function getAdminToken() {
   if (!token) return null;
   return await validateAdmin(token) ? token : null;
 }
+
+export async function getUserToken() {
+  const token = (await cookies()).get('residence_admin')?.value;
+  if (!token) return null;
+  const response = await supabaseRequest('/auth/v1/user', {}, token);
+  if (!response.ok) return null;
+  const user = await response.json();
+  return typeof user.id === 'string' ? token : null;
+}

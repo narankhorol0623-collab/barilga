@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
+import { getAdminToken } from "@/lib/admin";
 import { apartments } from "@/app/admin/lib/apartments";
 
 export async function PATCH(req: Request) {
   try {
+    if (!(await getAdminToken())) {
+      return NextResponse.json({ error: "Админ эрхээр нэвтэрнэ үү." }, { status: 401 });
+    }
     const body = await req.json();
     const { id, number, floor, rooms, area, price, status } = body;
 

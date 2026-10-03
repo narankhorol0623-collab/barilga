@@ -2,15 +2,14 @@ import { NextResponse } from "next/server";
 import { normalizePhone } from "@/app/admin/lib/phones";
 import { supabaseRequest } from "@/lib/supabase";
 
-// POST /admin/api/submit-phonenumber   body: { phone, consent, block?, floor?, layout?, unit? }
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    const body = await req.json().catch(() => null);
     const phone = normalizePhone(body?.phone);
 
     if (!phone) {
       return NextResponse.json(
-        { error: "Utasnii dugaar buruu baina (8 orontoi baih yostoi)" },
+        { error: "8 оронтой зөв дугаар оруулна уу." },
         { status: 400 },
       );
     }
@@ -89,22 +88,10 @@ export async function POST(req: Request) {
         { status: 400 },
       );
     }
-    const id = await response.json().catch(() => null);
 
     return NextResponse.json({ success: true, id }, { status: 201 });
   } catch (err) {
     console.error("submit-phonenumber:", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
-}
-
-function publicSubmissionError(message?: string) {
-  if (message === "too_many_requests") {
-    return "Өнөөдрийн хүсэлтийн хязгаарт хүрсэн байна. Маргааш дахин оролдоно уу.";
-  }
-  if (message === "invalid_selection") {
-    return "Энэ байрны сонголт өөрчлөгдсөн байна. Хуудсаа шинэчилнэ үү.";
-  }
-  if (message === "invalid_phone") return "8 оронтой зөв дугаар оруулна уу.";
-  return "Хүсэлтийг хадгалж чадсангүй. Дахин оролдоно уу.";
 }
