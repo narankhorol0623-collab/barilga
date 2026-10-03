@@ -6,27 +6,29 @@ interface LoginPageProps {
   onLogin: () => void;
 }
 
-const VALID_CREDENTIALS = {
-  email: "administor@gundsupply.mn",
-  password: "admin123",
-};
-
 export default function LoginPage({ onLogin }: LoginPageProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(""); // Дахин илгээх бүрд алдааг цэвэрлэнэ
-
-    if (
-      email.trim() === VALID_CREDENTIALS.email &&
-      password === VALID_CREDENTIALS.password
-    ) {
+    setError("");
+    setPending(true);
+    try {
+      const response = await fetch("/admin/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || "Нэвтрэхэд алдаа гарлаа.");
       onLogin();
-    } else {
-      setError("И-мэйл эсвэл нууц үг буруу байна!");
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Нэвтрэхэд алдаа гарлаа.");
+    } finally {
+      setPending(false);
     }
   };
 
@@ -58,6 +60,7 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
               id="admin-email"
               type="email"
               required
+              autoComplete="username"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Компаний И-мэйл хаягаа оруулна уу?"
@@ -73,6 +76,7 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
               id="admin-password"
               type="password"
               required
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Нууц үгээ оруулна уу?"
@@ -80,15 +84,8 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
             />
           </div>
 
-          <div className="flex items-center justify-between gap-2">
-            <label className="admin-login-remember select-none">
-              <input type="checkbox" className="rounded" />
-              <span>Намайг санах</span>
-            </label>
-          </div>
-
-          <button type="submit" className="admin-login-submit w-full">
-            Нэвтрэх
+          <button type="submit" disabled={pending} className="admin-login-submit w-full disabled:opacity-60">
+            {pending ? "Нэвтэрч байна…" : "Нэвтрэх"}
           </button>
         </form>
       </section>

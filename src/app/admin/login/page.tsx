@@ -7,7 +7,7 @@ export default function Page() {
   const router = useRouter();
 
   const handleLogin = () => {
-    router.push("/");
+    router.push("/admin");
   };
 
   return (

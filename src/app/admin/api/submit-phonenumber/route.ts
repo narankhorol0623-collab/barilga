@@ -1,13 +1,8 @@
 import { NextResponse } from "next/server";
-import {
-  phones,
-  normalizePhone,
-  nextPhoneId,
-  type PhoneSubmission,
-} from "@/app/admin/lib/phones";
+import { normalizePhone } from "@/app/admin/lib/phones";
 import { supabaseRequest } from "@/lib/supabase";
 
-// POST /api/submit-phonenumber   body: { phone, name?, apartmentId? }
+// POST /admin/api/submit-phonenumber   body: { phone, consent, block?, floor?, layout?, unit? }
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -39,7 +34,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Байрны сонголтоо дахин шалгана уу." }, { status: 400 });
     }
 
-    // Residence selection is validated and rate-limited by the database RPC before it is listed as a lead.
     if (hasResidenceSelection) {
       const response = await supabaseRequest("/rest/v1/rpc/submit_residence_inquiry", {
         method: "POST",
@@ -48,34 +42,40 @@ export async function POST(req: Request) {
       });
       if (!response.ok) {
         const error = await response.json().catch(() => ({}));
-        const message = error.message === "too_many_requests"
-          ? "Өнөөдрийн хүсэлтийн хязгаарт хүрсэн байна. Маргааш дахин оролдоно уу."
-          : error.message === "invalid_selection"
-            ? "Энэ байрны сонголт өөрчлөгдсөн байна. Хуудсаа шинэчилнэ үү."
-            : "Хүсэлтийг хадгалж чадсангүй. Дахин оролдоно уу.";
-        return NextResponse.json({ error: message }, { status: 400 });
+        return NextResponse.json({ error: publicSubmissionError(error.message) }, { status: 400 });
       }
+      const id = await response.json().catch(() => null);
+      return NextResponse.json({ success: true, id }, { status: 201 });
     }
 
-    const submission: PhoneSubmission = {
-      id: nextPhoneId(),
-      phone,
-      name: body?.name ? String(body.name).slice(0, 100) : null,
-      apartmentId,
-      block,
-      floor,
-      layout,
-      createdAt: new Date().toISOString(),
-    };
-
-    phones.push(submission);
+    const response = await supabaseRequest("/rest/v1/rpc/submit_contact_inquiry", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ p_phone: phone }),
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      return NextResponse.json({ error: publicSubmissionError(error.message) }, { status: 400 });
+    }
+    const id = await response.json().catch(() => null);
 
     return NextResponse.json(
-      { success: true, id: submission.id },
+      { success: true, id },
       { status: 201 },
     );
   } catch (err) {
     console.error("submit-phonenumber:", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
+}
+
+function publicSubmissionError(message?: string) {
+  if (message === "too_many_requests") {
+    return "Өнөөдрийн хүсэлтийн хязгаарт хүрсэн байна. Маргааш дахин оролдоно уу.";
+  }
+  if (message === "invalid_selection") {
+    return "Энэ байрны сонголт өөрчлөгдсөн байна. Хуудсаа шинэчилнэ үү.";
+  }
+  if (message === "invalid_phone") return "8 оронтой зөв дугаар оруулна уу.";
+  return "Хүсэлтийг хадгалж чадсангүй. Дахин оролдоно уу.";
 }

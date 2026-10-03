@@ -71,7 +71,28 @@
 .admin-root .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
 .admin-root .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .admin-root .custom-scrollbar::-webkit-scrollbar-thumb { background: #263755; border-radius: 4px; }
-.admin-root aside > div:first-child img { display: block; width: 240px; height: 220px; object-fit: contain; }
+.admin-root aside > div:first-child img { display: block; width: 3rem; height: 3rem; object-fit: contain; }
+
+/* Keep admin content usable on narrow screens and short viewports. */
+.admin-root { height: 100dvh; min-height: 100dvh; }
+.admin-root main { min-width: 0; }
+.admin-root main > header { min-height: 4rem; }
+.admin-root table { font-variant-numeric: tabular-nums; }
+
+@media (max-width: 767px) {
+  .admin-root main.ml-sidebar-expanded { width: 100%; }
+  .admin-root main > header { padding-left: 4.25rem; padding-right: .75rem; }
+  .admin-root main > div.flex-1 { padding: 1rem; }
+  .admin-root aside { width: min(19.5rem, calc(100vw - 3rem)); }
+  .admin-root aside > div:first-child img { width: 3rem; height: 3rem; }
+}
+
+@media (max-width: 479px) {
+  .admin-root main > header { padding-right: .5rem; }
+  .admin-root main > header button { gap: .25rem; }
+  .admin-root main > div.flex-1 { padding: .75rem; }
+  .admin-root .glass-card { border-radius: 12px; }
+}
 
 .admin-login-screen {
   min-height: 100vh;
@@ -106,8 +127,8 @@
 .admin-login-submit:active { transform: scale(.99); }
 
 @media (max-width: 560px) {
-  .admin-login-card { padding: 30px 23px; }
-  .admin-login-heading { font-size: 24px; }
+  .admin-login-card { padding: 26px 20px; }
+  .admin-login-heading { font-size: clamp(21px, 6vw, 24px); }
   .admin-login-description { font-size: 14px; }
 }
 

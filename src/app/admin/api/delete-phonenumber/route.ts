@@ -1,36 +1,36 @@
 import { NextResponse } from "next/server";
-import { phones } from "@/app/admin/lib/phones";
+import { getAdminToken } from "@/lib/admin";
+import { supabaseRequest } from "@/lib/supabase";
 
-// DELETE /admin/api/delete-phonenumber?id=2   esvel body: { id } esvel { ids: [...] }
-export async function DELETE(req: Request) {
+export async function DELETE(request: Request) {
   try {
-    const { searchParams } = new URL(req.url);
-    const body = await req.json().catch(() => null);
+    const token = await getAdminToken();
+    if (!token) return NextResponse.json({ error: "Нэвтрэх шаардлагатай." }, { status: 401 });
 
-    const ids: string[] = body?.ids
-      ? body.ids.map(String)
-      : [searchParams.get("id") ?? body?.id].filter(Boolean).map(String);
-
-    if (ids.length === 0) {
-      return NextResponse.json({ error: "id shaardlagatai" }, { status: 400 });
+    const id = new URL(request.url).searchParams.get("id");
+    if (!id || !/^[0-9a-f-]{36}$/i.test(id)) {
+      return NextResponse.json({ error: "Хүсэлтийн ID буруу байна." }, { status: 400 });
     }
 
-    let deleted = 0;
-    for (const id of ids) {
-      const index = phones.findIndex((p) => p.id === id);
-      if (index !== -1) {
-        phones.splice(index, 1);
-        deleted++;
+    for (const table of ["contact_inquiries", "residence_inquiries"]) {
+      const response = await supabaseRequest(
+        `/rest/v1/${table}?id=eq.${encodeURIComponent(id)}&select=id`,
+        { method: "DELETE", headers: { Prefer: "return=representation" } },
+        token,
+      );
+      if (!response.ok) {
+        console.error("delete-phonenumber database error:", await response.text().catch(() => "unknown error"));
+        return NextResponse.json({ error: "Хүсэлтийг устгаж чадсангүй." }, { status: 502 });
+      }
+      const deleted = await response.json().catch(() => []);
+      if (Array.isArray(deleted) && deleted.length) {
+        return NextResponse.json({ success: true, deleted: 1 });
       }
     }
 
-    if (deleted === 0) {
-      return NextResponse.json({ error: "Oldsongui" }, { status: 404 });
-    }
-
-    return NextResponse.json({ success: true, deleted });
-  } catch (err) {
-    console.error("delete-phonenumber:", err);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json({ error: "Хүсэлт олдсонгүй." }, { status: 404 });
+  } catch (error) {
+    console.error("delete-phonenumber:", error);
+    return NextResponse.json({ error: "Сервертэй холбогдож чадсангүй." }, { status: 500 });
   }
 }

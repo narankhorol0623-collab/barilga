@@ -8,10 +8,12 @@ function LeadCard({
   lead,
   index,
   onDelete,
+  onStatusChange,
 }: {
   lead: PhoneSubmission;
   index: number;
   onDelete: (id: string) => void;
+  onStatusChange: (id: string, status: "new" | "contacted") => void;
 }) {
   return (
     <motion.div
@@ -47,13 +49,20 @@ function LeadCard({
         </span>
       </div>
       <div className="flex items-center justify-between gap-2">
-        <span className="px-2 py-0.5 rounded text-[10px] font-label-sm shrink-0 bg-primary-container/10 text-primary-container">
-          Шинэ хүсэлт
+        <span className={`px-2 py-0.5 rounded text-[10px] font-label-sm shrink-0 ${lead.status === "contacted" ? "bg-surface-variant text-on-surface-variant" : "bg-primary-container/10 text-primary-container"}`}>
+          {lead.status === "contacted" ? "Холбогдсон" : "Шинэ хүсэлт"}
         </span>
         <span className="text-[10px] text-on-surface-variant shrink-0">
           {new Date(lead.createdAt).toLocaleString("mn-MN")}
         </span>
       </div>
+      <button
+        type="button"
+        onClick={() => onStatusChange(lead.id, lead.status === "contacted" ? "new" : "contacted")}
+        className="mt-2 mr-4 text-xs text-primary-container hover:underline"
+      >
+        {lead.status === "contacted" ? "Шинэ болгох" : "Холбогдсон болгох"}
+      </button>
       <button
         type="button"
         onClick={() => onDelete(lead.id)}
@@ -68,6 +77,7 @@ function LeadCard({
 export default function RecentLeads() {
   const [leads, setLeads] = useState<PhoneSubmission[]>([]);
   const [error, setError] = useState("");
+  const [authRequired, setAuthRequired] = useState(false);
   async function refresh() {
     const response = await fetch("/admin/api/get-phonenumber", {
       cache: "no-store",
@@ -79,21 +89,43 @@ export default function RecentLeads() {
   }
   useEffect(() => {
     let active = true;
-    fetch("/admin/api/get-phonenumber", { cache: "no-store" })
-      .then(async (response) => {
+    let interval: number | undefined;
+    const load = async () => {
+      try {
+        const response = await fetch("/admin/api/get-phonenumber", { cache: "no-store" });
+        if (response.status === 401) {
+          if (active) setAuthRequired(true);
+          if (interval) window.clearInterval(interval);
+          return;
+        }
         const data = await response.json();
-        if (!response.ok)
-          throw new Error(data.error || "Хүсэлтүүдийг татаж чадсангүй");
-        return data.phoneNumbers as PhoneSubmission[];
+        if (!response.ok) throw new Error(data.error || "Хүсэлтүүдийг татаж чадсангүй");
+        if (active) {
+          setLeads(data.phoneNumbers as PhoneSubmission[]);
+          setError("");
+        }
+      } catch (e) {
+        if (active) setError(e instanceof Error ? e.message : "Хүсэлтүүдийг татаж чадсангүй");
+      }
+    };
+    fetch("/admin/api/session", { cache: "no-store" })
+      .then((response) => response.json())
+      .then((session) => {
+        if (!active) return;
+        if (!session.authenticated) {
+          setAuthRequired(true);
+          return;
+        }
+        setAuthRequired(false);
+        void load();
+        interval = window.setInterval(load, 10_000);
       })
-      .then((data) => {
-        if (active) setLeads(data);
-      })
-      .catch((e: Error) => {
-        if (active) setError(e.message);
+      .catch(() => {
+        if (active) setAuthRequired(true);
       });
     return () => {
       active = false;
+      if (interval) window.clearInterval(interval);
     };
   }, []);
   async function remove(id: string) {
@@ -104,7 +136,19 @@ export default function RecentLeads() {
     if (response.ok) refresh().catch((e) => setError(e.message));
     else setError("Хүсэлтийг устгаж чадсангүй");
   }
-  const newCount = leads.length;
+  async function changeStatus(id: string, status: "new" | "contacted") {
+    const response = await fetch("/admin/api/update-phonenumber", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, status }),
+    });
+    if (!response.ok) {
+      setError("Хүсэлтийн төлөвийг хадгалж чадсангүй");
+      return;
+    }
+    setLeads((current) => current.map((lead) => lead.id === id ? { ...lead, status } : lead));
+  }
+  const newCount = leads.filter((lead) => lead.status !== "contacted").length;
 
   return (
     <div className="glass-card p-4 sm:p-5 flex flex-col w-full overflow-hidden">
@@ -125,13 +169,18 @@ export default function RecentLeads() {
             {error}
           </p>
         )}
-        {!leads.length && !error && (
+        {authRequired && (
+          <p className="text-sm text-on-surface-variant">
+            Хүсэлтүүдийг харахын тулд <a className="text-primary-container underline" href="/admin/login">админд нэвтэрнэ үү</a>.
+          </p>
+        )}
+        {!leads.length && !error && !authRequired && (
           <p className="text-sm text-on-surface-variant">
             Одоогоор хүсэлт алга.
           </p>
         )}
         {leads.map((lead, index) => (
-          <LeadCard key={lead.id} lead={lead} index={index} onDelete={remove} />
+          <LeadCard key={lead.id} lead={lead} index={index} onDelete={remove} onStatusChange={changeStatus} />
         ))}
       </div>
     </div>

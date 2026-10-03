@@ -8,12 +8,12 @@ import {
   glassClass,
   headerClass,
   kickerClass,
-  menuClass,
   navToolsClass,
   primaryButtonClass,
   secondaryButtonClass,
   bottomNavClass,
 } from "./ui";
+import ContactForm from "./ContactForm";
 
 const milestones = [
   {
@@ -86,7 +86,12 @@ export default async function Home() {
           </Link>
           <a href="#projects">Төслүүд</a>
           <a href="#about">Бидний тухай</a>
-          <a href="#contact">Холбоо барих</a>
+          <Link
+            href="#contact"
+            className="hover:text-primary transition-colors"
+          >
+            Холбоо барих
+          </Link>
         </nav>
         <div className={navToolsClass}>
           <ThemeToggle />
@@ -362,9 +367,9 @@ export default async function Home() {
         </section>
       </main>
 
+      <ContactForm />
       <footer
-        id="contact"
-        className="grid grid-cols-[1.2fr_1fr_1fr] items-center gap-10 border-t border-white/7 bg-[#060c1d] px-[clamp(20px,7vw,120px)] py-[52px] max-[760px]:grid-cols-1 max-[760px]:pb-[110px] max-[760px]:text-center in-data-[theme=light]:bg-[#e8eef6]"
+        className="flex justify-evenly items-center gap-10 border-t border-white/7 bg-[#060c1d] px-[clamp(20px,7vw,120px)] py-[52px] max-[760px]:grid-cols-1 max-[760px]:pb-[110px] max-[760px]:text-center in-data-[theme=light]:bg-[#e8eef6]"
       >
         <div className="space-y-4">
           <BrandLogo />
@@ -372,12 +377,7 @@ export default async function Home() {
             Өндөр зэрэглэлийн үл хөдлөх хөрөнгийн зах зээлд тэргүүлэгч.
           </p>
         </div>
-        <div className="flex flex-wrap gap-[18px] text-xs text-[#b7c0d2] max-[760px]:justify-center">
-          <a href="#about">Бидний тухай</a>
-          <a href="#projects">Төслүүд</a>
-          <a href="#contact">Холбоо барих</a>
-          <a href="#">Нууцлалын бодлого</a>
-        </div>
+
         <small className="text-right leading-[1.7] text-[#b7c0d2] max-[760px]:text-center">
           © 2024 Гүнд Саплай ХХК.
           <br />
@@ -391,12 +391,9 @@ export default async function Home() {
         <Link href="/master-plan">
           ▥<span>ТӨСЛҮҮД</span>
         </Link>
-        <a href="#">
+        <Link href="#">
           ▱<span>ХАДГАЛСАН</span>
-        </a>
-        <a href="#contact">
-          ?<span>ХОЛБОО</span>
-        </a>
+        </Link>
       </nav>
     </>
   );
