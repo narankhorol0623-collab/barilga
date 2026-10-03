@@ -9,6 +9,7 @@ export type PhoneSubmission = {
   block: string | null;
   floor: number | null;
   layout: string | null;
+  status?: "new" | "contacted";
   createdAt: string; // ISO
 };
 

@@ -129,7 +129,10 @@ export default function ApartmentManager() {
           onChange={(e) => setQuery(e.target.value)}
         />
       </div>
-      <form onSubmit={save} className="grid grid-cols-2 gap-2 md:grid-cols-4">
+      <form
+        onSubmit={save}
+        className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-2 md:grid-cols-4"
+      >
         <input
           className={input}
           required
@@ -186,14 +189,14 @@ export default function ApartmentManager() {
           <option value="RESERVED">Захиалгатай</option>
           <option value="SOLD">Борлуулсан</option>
         </select>
-        <div className="flex gap-2">
-          <button className="rounded bg-primary-container px-3 py-2 text-sm font-semibold text-surface">
+        <div className="flex flex-wrap gap-2 min-[420px]:col-span-2 md:col-span-1">
+          <button className="flex-1 rounded bg-primary-container px-3 py-2 text-sm font-semibold text-surface md:flex-none">
             {editing ? "Шинэчлэх" : "Нэмэх"}
           </button>
           {editing && (
             <button
               type="button"
-              className="rounded border border-outline-variant px-3 py-2 text-sm"
+              className="flex-1 rounded border border-outline-variant px-3 py-2 text-sm md:flex-none"
               onClick={() => {
                 setForm(blank);
                 setEditing(null);
@@ -210,7 +213,7 @@ export default function ApartmentManager() {
         </p>
       )}
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm">
+        <table className="w-full min-w-[640px] text-left text-sm">
           <thead>
             <tr className="border-b border-outline-variant text-on-surface-variant">
               <th className="p-2">Байр</th>

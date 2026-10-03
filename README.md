@@ -39,9 +39,11 @@ bun run db:check
 The migration runner checks the project host/user and records applied migrations
 in `barilga_migrations.applied`. Alternatively run the SQL files under
 `supabase/migrations` in order in Supabase's SQL Editor, once each. If the original
-four catalog tables already exist, start with `202609280001_residence_inquiries.sql`.
-The runner recognizes an existing original four-table schema. Do not mix manual
-execution of the new migration with the runner unless its history is also recorded.
+four catalog tables already exist, the runner recognizes them and applies any
+remaining migrations. For manual SQL Editor setup on an existing catalog, run
+`202609280001_residence_inquiries.sql` and then
+`202610020001_contact_inquiries.sql`. Do not mix manual migration execution with
+the runner unless its history is also recorded.
 
 The new migration stores the confirmed N7 building, floors 1–2 as garages, floors
 3–15 as residential, and A (101.23 m² / 4 rooms), B (81 m² / 3 rooms), C (68.18 m² /
@@ -70,20 +72,22 @@ Keep `catalog_floors.available` and `total` null until counts are confirmed.
 
 ### Contact requests and admin
 
-Visitors open a plan and submit their phone number. `submit_residence_inquiry`
-validates the published, selectable building, residential floor, layout and any
-specified available unit in the database. It stores a `residence_inquiries` record
-without changing the apartment's sale status. Repeat submissions of the same
-phone/selection within 10 minutes are deduplicated; each phone is limited to three
-requests per day. These limits are not a substitute for CAPTCHA under heavy abuse.
+Visitors can submit a phone number from the home page or open a plan and submit
+their phone number. General contact requests are stored in `contact_inquiries`;
+plan requests are stored in `residence_inquiries`. The database validates the
+published building, residential floor, layout and any specified available unit
+for plan requests. A plan inquiry does not change an apartment's sale status.
+Matching plan submissions within 10 minutes are deduplicated, and each request
+type limits a phone to three requests per day. These limits are not a substitute
+for CAPTCHA under heavy abuse.
 
 Create the staff account in **Supabase Authentication → Users**, then add its UUID
 to `catalog_admins.user_id` using Table Editor (or a trusted SQL session). Staff
-sign in at `/admin/login` with that account's email and password. There is no public
-admin signup or default password. Login lasts up to one hour, then requires signing
-in again. `/admin` shows the latest 100 requests, their phone, floor, layout and
-actual unit number where provided. Staff can mark requests as contacted. Older
-requests remain in Supabase.
+sign in at `/admin/login` or `/admin` with that account's email and password.
+There is no public admin signup or default password. Login lasts up to one hour,
+then requires signing in again. `/admin` shows the latest 100 requests, their
+phone, floor, layout and actual unit number where provided. Staff can mark a
+request as contacted or delete it. Older requests remain in Supabase until deleted.
 
 RLS prevents public users from reading phone numbers or granting themselves admin
 rights. Admin authorization is checked on the server and in database policies.

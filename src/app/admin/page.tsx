@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import LoginPage from "./LoginPage";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 import KpiCards from "./KpiCards";
@@ -13,23 +12,19 @@ import ApartmentManager from "./ApartmentManager";
 import type { AdminSection } from "./lib/navigation";
 
 export default function DashboardPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeSection, setActiveSection] = useState<AdminSection>("dashboard");
 
-  if (!isAuthenticated) {
-    return (
-      <div className="fixed inset-0 z-50 bg-background flex items-center justify-center">
-        <LoginPage onLogin={() => setIsAuthenticated(true)} />
-      </div>
-    );
-  }
+  const logout = async () => {
+    await fetch("/admin/api/logout", { method: "POST" });
+    window.location.assign("/admin/login");
+  };
 
   return (
     <>
       <Sidebar
         activeSection={activeSection}
         onNavigate={setActiveSection}
-        onLogout={() => setIsAuthenticated(false)}
+        onLogout={logout}
       />
 
       <main className="flex-1 ml-sidebar-expanded flex flex-col h-screen overflow-hidden bg-background relative z-0">
@@ -119,7 +114,7 @@ export default function DashboardPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setIsAuthenticated(false)}
+                  onClick={logout}
                   className="rounded bg-error px-4 py-2 text-sm font-semibold text-white"
                 >
                   Гарах

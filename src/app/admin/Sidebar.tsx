@@ -95,7 +95,7 @@ export default function Sidebar({
             transition={{ duration: 0.4, ease: "easeOut" }}
             className="font-headline-sm text-headline-sm font-bold text-primary flex items-center gap-2"
           >
-            <img src="/good-supply-logo.png" alt="" className="h-8 w-auto" />
+            <img src="/gund-supply-logo.webp" alt="" className="h-8 w-auto" />
             <h1 className="text-xl font-bold text-center text-primary uppercase">
               &quot;Гүнд Саплай&quot;
             </h1>
