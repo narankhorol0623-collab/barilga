@@ -32,7 +32,7 @@ export default function RootLayout({
         rel="stylesheet"
         precedence="default"
       />
-      <div className="admin-root dark flex h-screen overflow-hidden bg-surface text-on-surface font-body-md text-body-md custom-scrollbar">
+      <div data-theme="dark" className="admin-root flex h-screen overflow-hidden bg-surface text-on-surface font-body-md text-body-md custom-scrollbar">
         {children}
       </div>
     </>

@@ -4,7 +4,6 @@ import { useState } from "react";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 import KpiCards from "./KpiCards";
-import AnalyticsChart from "./AnalyticsChart";
 import MilestoneTracker from "./MilestoneTracker";
 import ProjectTable from "./ProjectTable";
 import RecentLeads from "./RecentLeads";
@@ -37,13 +36,12 @@ export default function DashboardPage() {
           {activeSection === "dashboard" && (
             <>
               <KpiCards />
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <AnalyticsChart />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <MilestoneTracker />
-              </div>
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <ProjectTable />
                 <RecentLeads />
+              </div>
+              <div className="grid grid-cols-1 gap-6">
+                <ProjectTable />
               </div>
             </>
           )}

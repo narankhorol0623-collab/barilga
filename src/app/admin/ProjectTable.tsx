@@ -18,7 +18,7 @@ const statusBadge: Record<ProjectStatus, string> = {
 
 const progressBarColor: Record<ProjectStatus, string> = {
   "Идэвхтэй борлуулалт":
-    "bg-primary-container shadow-[0_0_4px_rgba(0,245,212,0.5)]",
+    "bg-primary-container admin-accent-glow-strong",
   "Урьдчилсан борлуулалт": "bg-on-surface-variant",
   "Түр хойшлуулсан": "bg-error",
 };
@@ -29,7 +29,7 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.08 }}
-      className="hover:bg-[#1E2D50]/50 transition-colors group"
+      className="hover:bg-surface-container-high/50 transition-colors group"
     >
       <td className="py-3 sm:py-4 px-3 sm:px-5">
         <div className="flex items-center gap-2.5 sm:gap-3 min-w-[180px] sm:min-w-0">

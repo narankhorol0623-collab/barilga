@@ -28,7 +28,7 @@ function DotIndicator({ state }: { state: MilestoneState }) {
     return (
       <div className="absolute left-0 top-1 w-6 h-6 rounded-full bg-primary-container/20 flex items-center justify-center border border-primary-container">
         <motion.div
-          className="w-2 h-2 rounded-full bg-primary-container shadow-[0_0_8px_rgba(0,245,212,0.8)]"
+          className="w-2 h-2 rounded-full bg-primary-container admin-accent-glow"
           animate={{ scale: [1, 1.25, 1] }}
           transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
         />
@@ -78,7 +78,7 @@ function MilestoneRow({
             <motion.div
               className={`h-full rounded-full ${
                 milestone.state === "active"
-                  ? "bg-primary-container shadow-[0_0_8px_rgba(0,245,212,0.5)]"
+                  ? "bg-primary-container admin-accent-glow"
                   : "bg-on-surface-variant"
               }`}
               initial={{ width: 0 }}
