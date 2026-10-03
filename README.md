@@ -81,9 +81,12 @@ Matching plan submissions within 10 minutes are deduplicated, and each request
 type limits a phone to three requests per day. These limits are not a substitute
 for CAPTCHA under heavy abuse.
 
-Create the staff account in **Supabase Authentication → Users**, then add its UUID
-to `catalog_admins.user_id` using Table Editor (or a trusted SQL session). Staff
-sign in at `/admin/login` or `/admin` with that account's email and password.
+Staff can sign in at `/admin/login` with their Supabase email and password when
+their UUID is present in `catalog_admins.user_id`. Add staff membership using
+Table Editor (or a trusted SQL session). `/admin` checks admin authorization on
+the server before rendering; missing, expired or unauthorized sessions redirect
+to login. Apartment and customer-request APIs also require admin authorization.
+The session endpoint reports authentication and admin authorization separately.
 There is no public admin signup or default password. Login lasts up to one hour,
 then requires signing in again. `/admin` shows the latest 100 requests, their
 phone, floor, layout and actual unit number where provided. Staff can mark a
