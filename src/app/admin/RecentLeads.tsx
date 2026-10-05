@@ -49,7 +49,9 @@ function LeadCard({
         </span>
       </div>
       <div className="flex items-center justify-between gap-2">
-        <span className={`px-2 py-0.5 rounded text-[10px] font-label-sm shrink-0 ${lead.status === "contacted" ? "bg-surface-variant text-on-surface-variant" : "bg-primary-container/10 text-primary-container"}`}>
+        <span
+          className={`px-2 py-0.5 rounded text-[10px] font-label-sm shrink-0 ${lead.status === "contacted" ? "bg-surface-variant text-on-surface-variant" : "bg-primary-container/10 text-primary-container"}`}
+        >
           {lead.status === "contacted" ? "Холбогдсон" : "Шинэ хүсэлт"}
         </span>
         <span className="text-[10px] text-on-surface-variant shrink-0">
@@ -58,7 +60,12 @@ function LeadCard({
       </div>
       <button
         type="button"
-        onClick={() => onStatusChange(lead.id, lead.status === "contacted" ? "new" : "contacted")}
+        onClick={() =>
+          onStatusChange(
+            lead.id,
+            lead.status === "contacted" ? "new" : "contacted",
+          )
+        }
         className="mt-2 mr-4 text-xs text-primary-container hover:underline"
       >
         {lead.status === "contacted" ? "Шинэ болгох" : "Холбогдсон болгох"}
@@ -92,20 +99,26 @@ export default function RecentLeads() {
     let interval: number | undefined;
     const load = async () => {
       try {
-        const response = await fetch("/admin/api/get-phonenumber", { cache: "no-store" });
+        const response = await fetch("/admin/api/get-phonenumber", {
+          cache: "no-store",
+        });
         if (response.status === 401) {
           if (active) setAuthRequired(true);
           if (interval) window.clearInterval(interval);
           return;
         }
         const data = await response.json();
-        if (!response.ok) throw new Error(data.error || "Хүсэлтүүдийг татаж чадсангүй");
+        if (!response.ok)
+          throw new Error(data.error || "Хүсэлтүүдийг татаж чадсангүй");
         if (active) {
           setLeads(data.phoneNumbers as PhoneSubmission[]);
           setError("");
         }
       } catch (e) {
-        if (active) setError(e instanceof Error ? e.message : "Хүсэлтүүдийг татаж чадсангүй");
+        if (active)
+          setError(
+            e instanceof Error ? e.message : "Хүсэлтүүдийг татаж чадсангүй",
+          );
       }
     };
     fetch("/admin/api/session", { cache: "no-store" })
@@ -118,7 +131,9 @@ export default function RecentLeads() {
         }
         setAuthRequired(false);
         if (!session.authorized) {
-          setError("Та нэвтэрсэн байна. Хэрэглэгчдийн хүсэлтийг харахад админ эрх шаардлагатай.");
+          setError(
+            "Та нэвтэрсэн байна. Хэрэглэгчдийн хүсэлтийг харахад админ эрх шаардлагатай.",
+          );
           return;
         }
         void load();
@@ -150,7 +165,9 @@ export default function RecentLeads() {
       setError("Хүсэлтийн төлөвийг хадгалж чадсангүй");
       return;
     }
-    setLeads((current) => current.map((lead) => lead.id === id ? { ...lead, status } : lead));
+    setLeads((current) =>
+      current.map((lead) => (lead.id === id ? { ...lead, status } : lead)),
+    );
   }
   const newCount = leads.filter((lead) => lead.status !== "contacted").length;
 
@@ -175,7 +192,11 @@ export default function RecentLeads() {
         )}
         {authRequired && (
           <p className="text-sm text-on-surface-variant">
-            Хүсэлтүүдийг харахын тулд <a className="text-primary-container underline" href="/admin/login">админд нэвтэрнэ үү</a>.
+            Хүсэлтүүдийг харахын тулд{" "}
+            <a className="text-primary-container underline" href="/admin/login">
+              админд нэвтэрнэ үү
+            </a>
+            .
           </p>
         )}
         {!leads.length && !error && !authRequired && (
@@ -184,7 +205,13 @@ export default function RecentLeads() {
           </p>
         )}
         {leads.map((lead, index) => (
-          <LeadCard key={lead.id} lead={lead} index={index} onDelete={remove} onStatusChange={changeStatus} />
+          <LeadCard
+            key={lead.id}
+            lead={lead}
+            index={index}
+            onDelete={remove}
+            onStatusChange={changeStatus}
+          />
         ))}
       </div>
     </div>

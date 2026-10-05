@@ -5,7 +5,10 @@ import { Apartment, apartments, nextId } from "../../lib/apartments";
 export async function POST(req: Request) {
   try {
     if (!(await getAdminToken())) {
-      return NextResponse.json({ error: "Админ эрхээр нэвтэрнэ үү." }, { status: 401 });
+      return NextResponse.json(
+        { error: "Админ эрхээр нэвтэрнэ үү." },
+        { status: 401 },
+      );
     }
     const body = await req.json();
     const { projectId, number, floor, rooms, area, price, status } = body;
