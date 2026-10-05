@@ -54,7 +54,10 @@ export default function HomeProjects({ projects, error }: Props) {
         </div>
       </section>
 
-      <section data-scroll-reveal className="px-[clamp(20px,7vw,120px)] py-[100px] text-center max-[760px]:px-4 max-[760px]:py-[72px]">
+      <section
+        data-scroll-reveal
+        className="px-[clamp(20px,7vw,120px)] py-[100px] text-center max-[760px]:px-4 max-[760px]:py-[72px]"
+      >
         <div
           className={`${glassClass} mx-auto max-w-[1020px] rounded-[20px] px-[50px] py-[70px] max-[760px]:px-5 max-[760px]:py-[46px]`}
         >
