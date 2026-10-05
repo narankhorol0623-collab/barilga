@@ -5,6 +5,7 @@ import { useRef, useState } from 'react';
 import { residenceMap, type ResidenceBlock, type ResidenceFloor, type ResidenceLayout, type ResidenceUnit } from '@/lib/residence';
 import { residenceDesigns } from '@/lib/residence-layouts';
 import InquiryForm from './inquiry-form';
+import ResidenceModel, { residenceModels } from './residence-model';
 
 type Props = {
   blocks: ResidenceBlock[];
@@ -100,7 +101,7 @@ export default function ResidenceSelector({ blocks, floors, units, layouts, init
             {inventoryUnavailable ? <p className="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">Байрны борлуулалтын мэдээлэл болон хүсэлт илгээх үйлчилгээ түр боломжгүй байна.</p> : selection.unit && selection.unit.status !== 'available' ? <p className="text-sm text-slate-500">{statusLabels[selection.unit.status]}</p> : <InquiryForm key={`${block.slug}-${floor}-${selection.layout.code}-${selection.unit?.number ?? ''}`} block={block.slug} floor={floor} layout={selection.layout.code} unit={selection.unit?.number} />}
             </aside>
           </div>
-          <section className="mx-5 mb-5 rounded-xl border border-slate-200 bg-slate-50 p-5"><h3 className="font-semibold">3D дизайн · Интерьер</h3>{residenceDesigns[selection.layout.code]?.length ? <div className="mt-4 grid gap-4 min-[700px]:grid-cols-2">{residenceDesigns[selection.layout.code].map(design => <figure key={design.src}><Image src={design.src} alt={design.caption} width={1200} height={800} unoptimized className="h-auto w-full rounded-lg" /><figcaption className="mt-2 text-sm text-slate-600">{design.caption}</figcaption></figure>)}</div> : <p className="mt-2 text-sm text-slate-500">Энэ сууцны 3D дизайн, интерьерийн зургууд удахгүй нэмэгдэнэ.</p>}</section>
+          <section className="mx-5 mb-5 rounded-xl border border-slate-200 bg-slate-50 p-5"><h3 className="font-semibold">3D дизайн · Интерьер</h3>{residenceModels[selection.layout.code] ? <ResidenceModel key={selection.layout.code} src={residenceModels[selection.layout.code]} /> : residenceDesigns[selection.layout.code]?.length ? <div className="mt-4 grid gap-4 min-[700px]:grid-cols-2">{residenceDesigns[selection.layout.code].map(design => <figure key={design.src}><Image src={design.src} alt={design.caption} width={1200} height={800} unoptimized className="h-auto w-full rounded-lg" /><figcaption className="mt-2 text-sm text-slate-600">{design.caption}</figcaption></figure>)}</div> : <p className="mt-2 text-sm text-slate-500">Энэ сууцны 3D дизайн, интерьерийн зургууд удахгүй нэмэгдэнэ.</p>}</section>
         </>}
       </dialog>
     </>
