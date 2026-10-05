@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   icons: { icon: { url: "/gund-supply-logo.webp", type: "image/webp" } },

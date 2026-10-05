@@ -129,8 +129,12 @@ export default function TopBar() {
               aria-label="Утасны дугаарын мэдэгдлүүд"
             >
               <div className="flex items-center justify-between border-b border-outline-variant px-4 py-3">
-                <h2 className="text-sm font-semibold text-on-surface">Шинэ хүсэлтүүд</h2>
-                <span className="text-xs text-on-surface-variant">Сүүлийн 8</span>
+                <h2 className="text-sm font-semibold text-on-surface">
+                  Шинэ хүсэлтүүд
+                </h2>
+                <span className="text-xs text-on-surface-variant">
+                  Сүүлийн 8
+                </span>
               </div>
               <div className="max-h-80 overflow-y-auto custom-scrollbar p-2">
                 {notifications.length ? (
@@ -140,9 +144,14 @@ export default function TopBar() {
                       className="rounded-md px-3 py-2 hover:bg-surface-container-high"
                     >
                       <div className="flex items-center justify-between gap-3">
-                        <span className="text-sm font-medium text-on-surface">{submission.phone}</span>
+                        <span className="text-sm font-medium text-on-surface">
+                          {submission.phone}
+                        </span>
                         {submission.status === "new" && (
-                          <span className="h-2 w-2 shrink-0 rounded-full bg-primary-container" aria-label="Шинэ" />
+                          <span
+                            className="h-2 w-2 shrink-0 rounded-full bg-primary-container"
+                            aria-label="Шинэ"
+                          />
                         )}
                       </div>
                       <p className="mt-1 text-xs text-on-surface-variant">
@@ -165,16 +174,6 @@ export default function TopBar() {
         </AnimatePresence>
 
         <AdminThemeToggle className="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors" />
-
-        <motion.button
-          whileHover={{ boxShadow: "0 0 15px color-mix(in srgb, var(--color-primary-container) 30%, transparent)" }}
-          whileTap={{ scale: 0.95 }}
-          className="bg-primary-container text-[#080E1E] px-3 sm:px-4 py-2 rounded font-label-md text-label-md font-bold flex items-center gap-2 transition-colors whitespace-nowrap"
-        >
-          <span className="material-symbols-outlined text-[18px]">add</span>
-          <span className="hidden xs:inline">Шинэ төсөл нэмэх</span>
-          <span className="xs:hidden">Нэмэх</span>
-        </motion.button>
       </div>
 
       {/* Mobile Expandable Search Bar (Smooth Framer Motion) */}
