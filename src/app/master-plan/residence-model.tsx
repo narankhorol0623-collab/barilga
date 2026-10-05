@@ -33,7 +33,7 @@ export default function ResidenceModel({ src }: { src: string }) {
     renderer.domElement.style.touchAction = 'none';
     renderer.domElement.setAttribute('aria-label', 'Сууцны 3D загвар');
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color('#f8fafc');
+    scene.background = new THREE.Color('#c8cbd0');
     scene.add(new THREE.HemisphereLight(0xffffff, 0xb1a99b, 3));
     const light = new THREE.DirectionalLight(0xffffff, 3);
     light.position.set(10, 20, 10);
