@@ -1,27 +1,44 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 
 type Theme = "dark" | "light";
 
+const THEME_CHANGE_EVENT = "admin-theme-change";
+
+function subscribe(callback: () => void) {
+  window.addEventListener(THEME_CHANGE_EVENT, callback);
+  return () => window.removeEventListener(THEME_CHANGE_EVENT, callback);
+}
+
+function getSnapshot(): Theme {
+  return window.localStorage.getItem("admin-theme") === "light"
+    ? "light"
+    : "dark";
+}
+
+function getServerSnapshot(): Theme {
+  return "dark";
+}
+
 export default function AdminThemeToggle({ className }: { className: string }) {
-  const [theme, setTheme] = useState<Theme>("dark");
+  const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   useEffect(() => {
-    const saved = window.localStorage.getItem("admin-theme");
-    const next: Theme = saved === "light" ? "light" : "dark";
-    document.querySelector(".admin-root")?.setAttribute("data-theme", next);
-    setTheme(next);
+    document
+      .querySelector(".admin-root")
+      ?.setAttribute("data-theme", getSnapshot());
   }, []);
 
   const toggle = () => {
     const next: Theme = theme === "dark" ? "light" : "dark";
     document.querySelector(".admin-root")?.setAttribute("data-theme", next);
     window.localStorage.setItem("admin-theme", next);
-    setTheme(next);
+    window.dispatchEvent(new Event(THEME_CHANGE_EVENT));
   };
 
-  const nextLabel = theme === "dark" ? "Гэрэлтэй горимд шилжих" : "Харанхуй горимд шилжих";
+  const nextLabel =
+    theme === "dark" ? "Гэрэлтэй горимд шилжих" : "Харанхуй горимд шилжих";
 
   return (
     <button
