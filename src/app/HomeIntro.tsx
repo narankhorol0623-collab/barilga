@@ -1,12 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import ThemeToggle from "./theme-toggle";
 import BrandLogo from "./brand-logo";
 import {
   glassClass,
   headerClass,
   kickerClass,
-  navToolsClass,
   primaryButtonClass,
   secondaryButtonClass,
 } from "./ui";
@@ -15,16 +13,19 @@ const milestones = [
   {
     year: "2019",
     title: "Hunnu Villa",
+    image: "/hunnuvilla.jpg",
     detail: "Барилгын салбар дахь ажлын туршлагын эхлэл",
   },
   {
     year: "2021",
     title: "Green Art",
+    image: "/greenart.png",
     detail: "Туслан гүйцэтгэгчээр ажилласан",
   },
   {
     year: "2022",
     title: "Sunset",
+    image: "/sunset.jpeg",
     detail: "Томоохон бүтээн байгуулалтын туршлага",
   },
   {
@@ -71,27 +72,23 @@ export default function HomeIntro() {
   return (
     <>
       <header
-        className={`${headerClass} !absolute !inset-x-0 !top-0 !z-50 !border-transparent fixed !bg-transparent !shadow-none !backdrop-blur-none`}
+        className={`${headerClass} !fixed !inset-x-0 !top-0 !z-50 !justify-center !border-b !border-black/5 !bg-white/75 !shadow-[0_8px_32px_rgba(10,17,40,.08)] !backdrop-blur-xl !backdrop-saturate-150`}
       >
-        <BrandLogo />
-        <nav className="flex gap-11 text-[15px] font-extrabold tracking-[.08em] max-[760px]:hidden [&_a]:border-b-2 [&_a]:border-transparent [&_a]:py-2.5 [&_a]:text-white [&_a]:drop-shadow-[0_2px_10px_rgba(0,0,0,.7)] [&_a]:transition-colors [&_a]:hover:border-[var(--brand-accent)] [&_a]:hover:text-white">
-          <Link className="!border-[var(--brand-accent)] !text-white" href="/">
+        <nav className="flex gap-11 text-[15px] font-extrabold tracking-[.08em] max-[760px]:hidden [&_a]:border-b-2 [&_a]:border-transparent [&_a]:py-2.5 [&_a]:text-[#0a1128] [&_a]:transition-colors [&_a]:hover:border-[var(--brand-accent)] [&_a]:hover:text-[#216aab]">
+          <Link className="!border-[#216aab] !text-[#216aab]" href="/">
             Нүүр
           </Link>
           <a href="#projects">Төслүүд</a>
           <a href="#about">Бидний тухай</a>
           <Link href="#contact">Холбоо барих</Link>
         </nav>
-        <div className={navToolsClass}>
-          <ThemeToggle />
-        </div>
       </header>
 
       <main>
         <section className="relative isolate flex h-svh min-h-[680px] items-end overflow-hidden px-[clamp(20px,5vw,72px)] pb-[clamp(28px,5vw,64px)] pt-[100px] max-[760px]:min-h-[720px] max-[760px]:px-4 max-[760px]:pb-24">
           {/* Дэвсгэр зураг */}
           <Image
-            src="/luxury.jpeg"
+            src="/luxury.JPG"
             alt=""
             fill
             priority
@@ -112,7 +109,9 @@ export default function HomeIntro() {
                 Шинэ төсөл нээлттэй
               </div>
               <h1 className="text-[clamp(40px,7vw,108px)] font-bold uppercase leading-[.95] tracking-[-.04em] text-white max-[760px]:text-[40px]">
-                ГҮНД САПЛАЙ
+                <span className="text-[color:var(--brand-accent)]">
+                  ГҮНД САПЛАЙ
+                </span>
                 <br />
                 <span>Ирээдүйн бүтээн байгуулалт</span>
               </h1>
@@ -133,6 +132,7 @@ export default function HomeIntro() {
 
         <section
           id="about"
+          data-scroll-reveal
           className="overflow-hidden px-[clamp(20px,7vw,120px)] py-[100px] max-[760px]:px-4 max-[760px]:py-[72px]"
         >
           <div className="mx-auto max-w-[1240px]">
@@ -165,46 +165,77 @@ export default function HomeIntro() {
             <div className="relative mt-16 grid grid-cols-4 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 max-[820px]:grid-cols-2 max-[480px]:grid-cols-1 in-data-[theme=light]:border-[#ccd5e2] in-data-[theme=light]:bg-[#ccd5e2]">
               {milestones.map((item) => (
                 <article
-                  className="bg-[#0d1730] p-7 in-data-[theme=light]:bg-white"
+                  data-scroll-reveal
+                  className={`${item.image ? "group" : ""} relative overflow-hidden bg-[#0d1730] p-7 in-data-[theme=light]:bg-white`}
                   key={item.year}
                 >
-                  <strong className="text-[32px] tracking-[-.04em] text-[color:var(--brand-accent)]">
-                    {item.year}
-                  </strong>
-                  <h3 className="mt-5 text-lg font-bold">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-[#8f9bb2] in-data-[theme=light]:text-[#526078]">
-                    {item.detail}
-                  </p>
+                  {item.image && (
+                    <>
+                      <Image
+                        src={item.image}
+                        alt=""
+                        fill
+                        sizes="(max-width: 480px) 100vw, (max-width: 820px) 50vw, 25vw"
+                        className="pointer-events-none scale-105 object-cover opacity-0 transition-all duration-500 group-hover:scale-100 group-hover:opacity-100"
+                      />
+                      <div className="pointer-events-none absolute inset-0 bg-[#0a1128]/70 opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
+                    </>
+                  )}
+                  <div className="relative z-10">
+                    <strong className="text-[32px] tracking-[-.04em] text-[color:var(--brand-accent)] transition-colors duration-500 group-hover:!text-white">
+                      {item.year}
+                    </strong>
+                    <h3 className="mt-5 text-lg font-bold transition-colors duration-500 group-hover:!text-white">
+                      {item.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-6 text-[#8f9bb2] transition-colors duration-500 group-hover:!text-white/90 in-data-[theme=light]:text-[#526078]">
+                      {item.detail}
+                    </p>
+                  </div>
                 </article>
               ))}
             </div>
 
+            <div className="absolute -right-20 -top-24 size-72 rounded-full bg-[var(--brand-accent)]/10 blur-[90px]" />
+
             <div
-              className={`${glassClass} relative mt-6 overflow-hidden rounded-2xl p-10 max-[760px]:p-6`}
+              className={`${glassClass} group relative mt-6 overflow-hidden rounded-2xl p-10 max-[760px]:p-6`}
             >
+              {/* Hover хийхэд бүх карт дээр гарч ирэх зураг */}
+              <Image
+                src="/luxury.jpeg"
+                alt=""
+                fill
+                sizes="(max-width: 1240px) 100vw, 1240px"
+                className="pointer-events-none object-cover opacity-0 scale-105 transition-all duration-500 group-hover:scale-100 group-hover:opacity-100"
+              />
+              <div className="pointer-events-none absolute inset-0 bg-[#0a1128]/70 opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
+
               <div className="absolute -right-20 -top-24 size-72 rounded-full bg-[var(--brand-accent)]/10 blur-[90px]" />
-              <div className="relative grid grid-cols-[auto_1fr] gap-10 max-[760px]:grid-cols-1 max-[760px]:gap-5">
-                <div className="text-[56px] font-black leading-none text-[color:var(--brand-accent)]">
+
+              {/* Агуулга зургийн дээр байрлана */}
+              <div className="relative z-10 grid grid-cols-[auto_1fr] gap-10 max-[760px]:grid-cols-1 max-[760px]:gap-5">
+                <div className="text-[56px] font-black leading-none text-[color:var(--brand-accent)] transition-colors duration-500 group-hover:!text-white">
                   3.8<span className="ml-1 text-lg">га</span>
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold">
+                  <h3 className="text-2xl font-bold transition-colors duration-500 group-hover:!text-white">
                     Luxury Residence — Зайсан
                   </h3>
-                  <p className="mt-3 max-w-[850px] leading-[1.8] text-[#b7c0d2] in-data-[theme=light]:text-[#526078]">
+                  <p className="mt-3 max-w-[850px] leading-[1.8] text-[#b7c0d2] transition-colors duration-500 group-hover:!text-white/90 in-data-[theme=light]:text-[#526078]">
                     Хан-Уул дүүргийн 11-р хороонд 5 блок орон сууц, 22 амины
                     орон сууц бүхий төслийг үе шаттай хэрэгжүүлж, төлөвлөгдсөн 5
                     блокийн бүтээн байгуулалтыг бүрэн дуусган захиалагчдадаа
                     хүлээлгэн өгөөд байна.
                   </p>
                   <div className="mt-6 flex flex-wrap gap-3 text-xs font-extrabold tracking-[.08em]">
-                    <span className="rounded-full border border-[var(--brand-accent)]/30 px-4 py-2 text-[color:var(--brand-accent)]">
+                    <span className="rounded-full border border-[var(--brand-accent)]/30 px-4 py-2 text-[color:var(--brand-accent)] transition-colors duration-500 group-hover:border-white/50 group-hover:!text-white">
                       5 БЛОК
                     </span>
-                    <span className="rounded-full border border-[var(--brand-accent)]/30 px-4 py-2 text-[color:var(--brand-accent)]">
+                    <span className="rounded-full border border-[var(--brand-accent)]/30 px-4 py-2 text-[color:var(--brand-accent)] transition-colors duration-500 group-hover:border-white/50 group-hover:!text-white">
                       22 АМИНЫ ОРОН СУУЦ
                     </span>
-                    <span className="rounded-full border border-[var(--brand-accent)]/30 px-4 py-2 text-[color:var(--brand-accent)]">
+                    <span className="rounded-full border border-[var(--brand-accent)]/30 px-4 py-2 text-[color:var(--brand-accent)] transition-colors duration-500 group-hover:border-white/50 group-hover:!text-green-400">
                       БҮРЭН ДУУССАН
                     </span>
                   </div>

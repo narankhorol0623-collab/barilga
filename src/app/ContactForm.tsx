@@ -54,6 +54,7 @@ export default function ContactForm() {
   return (
     <section
       id="contact"
+      data-scroll-reveal
       className="border-t border-white/10 bg-[#0a1128] py-12 text-white in-data-[theme=light]:border-[#d6deea] in-data-[theme=light]:bg-[#eef3f9] in-data-[theme=light]:text-[#0a1128]"
     >
       <div className="max-w-xl mx-auto px-4 text-center">

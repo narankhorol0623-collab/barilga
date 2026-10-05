@@ -19,9 +19,9 @@ export default function RootLayout({
       lang="mn"
       data-scroll-behavior="smooth"
       suppressHydrationWarning
-      className="h-full scroll-smooth antialiased bg-[#0a1128] font-sans text-[#f7f9ff] in-data-[theme=light]:bg-[#f4f7fb] in-data-[theme=light]:text-[#0a1128]"
+      className="h-full scroll-smooth antialiased bg-[#f4f7fb] font-sans text-[#0a1128]"
     >
-      <body className="flex min-h-full min-w-80 flex-col bg-[#0a1128] font-sans text-[#f7f9ff] in-data-[theme=light]:bg-[#f4f7fb] in-data-[theme=light]:text-[#0a1128]">
+      <body className="flex min-h-full min-w-80 flex-col bg-[#f4f7fb] font-sans text-[#0a1128]">
         {children}
       </body>
     </html>

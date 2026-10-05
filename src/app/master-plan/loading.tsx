@@ -1,5 +1,6 @@
 export default function Loading() {
   return (
+    <div data-theme="light">
     <main
       className="mx-auto w-full max-w-[1600px] px-4 pb-12 pt-28 min-[761px]:px-10"
       aria-busy="true"
@@ -12,5 +13,6 @@ export default function Loading() {
         <div className="h-96 animate-pulse rounded-2xl bg-slate-400/10 motion-reduce:animate-none" />
       </div>
     </main>
+    </div>
   );
 }

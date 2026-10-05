@@ -7,7 +7,7 @@ export default function HomeFooter() {
   return (
     <>
         <ContactForm />
-        <footer className="flex justify-evenly items-center gap-10 border-t border-white/7 bg-[#060c1d] px-[clamp(20px,7vw,120px)] py-[52px] max-[760px]:grid-cols-1 max-[760px]:pb-[110px] max-[760px]:text-center in-data-[theme=light]:bg-[#e8eef6]">
+        <footer data-scroll-reveal className="flex justify-evenly items-center gap-10 border-t border-white/7 bg-[#060c1d] px-[clamp(20px,7vw,120px)] py-[52px] max-[760px]:grid-cols-1 max-[760px]:pb-[110px] max-[760px]:text-center in-data-[theme=light]:bg-[#e8eef6]">
           <div className="space-y-4">
             <BrandLogo />
             <p className="leading-[1.7] text-[#b7c0d2] in-data-[theme=light]:text-[#526078]">
