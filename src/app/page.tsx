@@ -1,18 +1,18 @@
-import { getProjects } from "@/lib/catalog";
+import { homeStyles } from "./home-styles";
 import HomeIntro from "./HomeIntro";
 import HomeProjects from "./HomeProjects";
 import HomeFooter from "./HomeFooter";
 import ScrollReveal from "./ScrollReveal";
+import HomeAbout from "./HomeAbout";
 
-export default async function Home() {
-  const { data: projects, error } = await getProjects();
-
+export default function Home() {
   return (
-    <div data-theme="light" className="relative z-10">
+    <div data-theme="light" className={[homeStyles["home-site"], "relative", "z-10"].join(" ")}>
       <ScrollReveal />
       <HomeIntro />
       <main>
-        <HomeProjects projects={projects} error={error} />
+        <HomeProjects />
+        <HomeAbout />
       </main>
       <HomeFooter />
     </div>
