@@ -50,8 +50,8 @@ export const residenceTowerFloors: ResidenceFloor[] = Array.from(
 );
 export const residenceMap = {
   n7: {
-    points: "313,194 343,182 375,191 379,311 347,324 314,312",
-    label: [346, 254] as const,
+    points: "148,29 165,21 165,18 190,12 214,21 223,28 226,145 211,162 166,162 154,151",
+    label: [187, 107] as const,
   },
 };
 
