@@ -47,10 +47,10 @@ export default function ResidenceSelector({ blocks, floors, units, layouts, init
       <div className="grid items-start gap-5 min-[1100px]:grid-cols-[minmax(0,1fr)_380px] min-[1400px]:grid-cols-[minmax(0,1fr)_420px]">
         <section aria-label="Хотхоны зураг" className="overflow-hidden rounded-2xl border border-slate-400/20 bg-[#111d33] in-data-[theme=light]:bg-white">
           <h2 className="px-5 py-4 text-sm font-semibold">Хотхоны ерөнхий төлөвлөгөө</h2>
-          <div className="relative aspect-square bg-slate-800">
-            <Image src="/residence-master-plan.jpeg" alt="Luxury Residence хотхон. Арын 15 давхар N7 блокийг сонгоно уу." fill priority sizes="(min-width: 1100px) 65vw, 100vw" className="object-contain" />
+          <div className="relative aspect-[3/2] bg-slate-800">
+            <Image src="/residence-master-plan-landscaped.png" alt="Luxury Residence хотхон. Арын 15 давхар N7 блокийг сонгоно уу." fill priority sizes="(min-width: 1100px) 65vw, 100vw" className="object-contain" />
             {tower && (
-              <svg viewBox="0 0 720 720" className="absolute inset-0 h-full w-full" aria-label="15 давхар барилга сонгох">
+              <svg viewBox="0 0 720 480" className="absolute inset-0 h-full w-full" aria-label="15 давхар барилга сонгох">
                 <g role="button" tabIndex={0} aria-label={`${tower.name} сонгох`} aria-pressed={!!block} onClick={selectBlock} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectBlock(); } }} className="residence-map-block cursor-pointer outline-none">
                   <polygon points={residenceMap.n7.points} fill="#2796e6" fillOpacity={block ? .42 : .12} stroke="#bce5ff" strokeWidth="2" />
                   <g transform={`translate(${residenceMap.n7.label[0]}, ${residenceMap.n7.label[1]})`}>
